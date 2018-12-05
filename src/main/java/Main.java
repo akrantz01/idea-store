@@ -5,9 +5,17 @@ import java.util.Map;
 
 import static spark.Spark.*;
 
+/**
+ * @author Alex Krantz <alex@alexkrantz.com>
+ * @version 1.0
+ */
 public class Main {
     static Database db;
 
+    /**
+     * Main method to run
+     * @param args any arguments (not used)
+     */
     public static void main(String[] args) {
         // Initialize database
         db = new Database(System.getenv("CONNECTION_URL"), System.getenv("CONNECTION_USERNAME"), System.getenv("CONNECTION_PASSWORD"));
@@ -42,14 +50,11 @@ public class Main {
         });
     }
 
-    public static Map<String, String> newError(String reason) {
-        HashMap<String, String> err = new HashMap<>();
-        err.put("status", "error");
-        err.put("reason", reason);
-        return err;
-    }
-
-    public static JsonTransformer json() {
+    /**
+     * Simplified conversion to json
+     * @return json converter
+     */
+    private static JsonTransformer json() {
         return new JsonTransformer();
     }
 }

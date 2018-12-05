@@ -14,15 +14,25 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * @author Alex Krantz <alex@alexkrantz.com>
+ * @version 1.0
+ */
 class DatabaseTests {
     private static Database db;
 
+    /**
+     * Test adding an idea to the database
+     */
     @Test
     void testAddIdea() {
         Idea idea = db.addIdea("test idea", "test idea description");
         assertNotNull(idea);
     }
 
+    /**
+     * Test retrieving an idea from the database
+     */
     @Test
     void testGetIdea() {
         Idea origIdea = db.addIdea("test idea", "test idea description");
@@ -31,6 +41,9 @@ class DatabaseTests {
         assertEquals(origIdea, gotIdea);
     }
 
+    /**
+     * Test updating an idea in the database
+     */
     @Test
     void testUpdateIdea() {
         Idea idea = db.addIdea("test idea", "test idea description");
@@ -50,6 +63,9 @@ class DatabaseTests {
         assertNotEquals(description, idea.getDescription());
     }
 
+    /**
+     * Test deleting an idea from the database
+     */
     @Test
     void testDeleteIdea() {
         Idea origIdea = db.addIdea("test idea", "test idea description");
@@ -59,6 +75,9 @@ class DatabaseTests {
         assertNull(gotIdea);
     }
 
+    /**
+     * Test getting a list of ideas from the database
+     */
     @Test
     void testListIdeas() {
         List<Idea> expected = new ArrayList<>();
@@ -69,6 +88,9 @@ class DatabaseTests {
         assertEquals(expected, ideas);
     }
 
+    /**
+     * Test finding an idea by title
+     */
     @Test
     void testFindIdea() {
         List<Idea> expected = new ArrayList<>();
@@ -80,6 +102,10 @@ class DatabaseTests {
         assertEquals(expected, found);
     }
 
+    /**
+     * Test inclusively filtering by time
+     * @throws InterruptedException from sleeping
+     */
     @Test
     void testFilterRangeInclusive() throws InterruptedException {
         List<Idea> expected = new ArrayList<>();
@@ -111,6 +137,10 @@ class DatabaseTests {
         assertEquals(expected, found);
     }
 
+    /**
+     * Test exclusively filtering by time
+     * @throws InterruptedException from sleeping
+     */
     @Test
     void testFilterRangeExclusive() throws InterruptedException {
         List<Idea> expected = new ArrayList<>();
@@ -132,11 +162,17 @@ class DatabaseTests {
         assertEquals(expected, found);
     }
 
+    /**
+     * Create the database object on setup
+     */
     @BeforeAll
     static void setUp() {
         db = new Database();
     }
 
+    /**
+     * Purge the database after each test
+     */
     @AfterEach
     void tearDown() {
         SessionFactory factory;
@@ -161,6 +197,10 @@ class DatabaseTests {
         }
     }
 
+    /**
+     * Display all fields of an idea
+     * @param idea idea to display
+     */
     void describeIdeas(Idea idea) {
         System.out.println(idea + ":");
         System.out.println("\tID: " + idea.getId());
@@ -169,6 +209,10 @@ class DatabaseTests {
         System.out.println("\tDescription: " + idea.getDescription());
     }
 
+    /**
+     * Display all fields of a list of ideas
+     * @param ideas list of ideas to display
+     */
     void describeIdeas(List<Idea> ideas) {
         for (Idea idea: ideas) {
             System.out.println(idea + ":");

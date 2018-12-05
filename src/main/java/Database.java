@@ -9,9 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * @author Alex Krantz <alex@alexkrantz.com>
+ * @version 1.0
+ */
 public class Database {
     private static SessionFactory factory;
 
+    /**
+     * Create the default database object
+     */
     public Database() {
         try {
             factory = new Configuration().configure().buildSessionFactory();
@@ -21,6 +28,12 @@ public class Database {
         }
     }
 
+    /**
+     * Create a Database object while overriding configuration file parameters
+     * @param url connection url for database
+     * @param username database username
+     * @param password database password
+     */
     public Database(String url, String username, String password) {
         Properties p = new Properties();
         if (url != null) if (!url.equals("")) p.setProperty("hibernate.connection.url", url);
@@ -37,6 +50,12 @@ public class Database {
         }
     }
 
+    /**
+     * Add an idea object to the database
+     * @param title title of the idea
+     * @param description description of the idea
+     * @return the created idea object
+     */
     Idea addIdea(String title, String description) {
         Session session = factory.openSession();
         Transaction tx = null;
@@ -57,6 +76,11 @@ public class Database {
         return idea;
     }
 
+    /**
+     * Get an idea object by id
+     * @param id id number of the idea
+     * @return idea object at the specified id
+     */
     Idea getIdea(Integer id) {
         Session session = factory.openSession();
         Transaction tx = null;
@@ -76,6 +100,13 @@ public class Database {
         return idea;
     }
 
+    /**
+     * Update an idea object's title and/or description
+     * @param id id number of the idea
+     * @param title new title of the idea
+     * @param description new description of the idea
+     * @return updated idea object at the id
+     */
     Idea updateIdea(Integer id, String title, String description) {
         Session session = factory.openSession();
         Transaction tx = null;
@@ -100,6 +131,11 @@ public class Database {
         return idea;
     }
 
+    /**
+     * Delete an idea object
+     * @param id id number of the idea
+     * @return boolean for success or not
+     */
     boolean deleteIdea(Integer id) {
         Session session = factory.openSession();
         Transaction tx = null;
@@ -121,6 +157,10 @@ public class Database {
         return true;
     }
 
+    /**
+     * List all of the ideas in the database
+     * @return array of the idea objects
+     */
     List<Idea> listIdeas() {
         Session session = factory.openSession();
         Transaction tx = null;
@@ -141,6 +181,11 @@ public class Database {
         return ideas;
     }
 
+    /**
+     * Find an idea by title
+     * @param title title of the object to find
+     * @return array of possibly matching ideas
+     */
     List<Idea> findIdea(String title) {
         Session session = factory.openSession();
         Transaction tx = null;
@@ -163,6 +208,13 @@ public class Database {
         return ideas;
     }
 
+    /**
+     * Find all ideas within a certain timespan
+     * @param from starting time bound
+     * @param to ending time bound
+     * @param inclusive whether the search should include to and from
+     * @return array of ideas within the timespan
+     */
     List<Idea> filterRange(Timestamp from, Timestamp to, boolean inclusive) {
         if (from == null) from = new Timestamp(0);
         if (to == null) to = new Timestamp(1000 * ((System.currentTimeMillis() / 1000L) + (60 * 60 * 24 * 365)));
