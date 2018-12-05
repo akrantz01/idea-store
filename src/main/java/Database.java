@@ -57,6 +57,8 @@ public class Database {
      * @return the created idea object
      */
     Idea addIdea(String title, String description) {
+        if (title == null || description == null) return null;
+
         Session session = factory.openSession();
         Transaction tx = null;
         Idea idea = null;
