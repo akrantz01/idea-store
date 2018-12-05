@@ -31,6 +31,33 @@ class DatabaseTest {
     }
 
     /**
+     * Test adding an idea with only title
+     */
+    @Test
+    void addIdea_OnlyTitle_ShouldReturnNull() {
+        Idea idea = db.addIdea("test idea", null);
+        assertNull(idea);
+    }
+
+    /**
+     * Test adding an idea with only description
+     */
+    @Test
+    void addIdea_OnlyDescription_ShouldReturnNull() {
+        Idea idea = db.addIdea(null, "test idea description");
+        assertNull(idea);
+    }
+
+    /**
+     * Test adding an idea with title and description null
+     */
+    @Test
+    void addIdea_TitleAndDescriptionNull_ShouldReturnNull() {
+        Idea idea = db.addIdea(null, null);
+        assertNull(idea);
+    }
+
+    /**
      * Test retrieving an idea with an existing id
      */
     @Test
@@ -42,6 +69,15 @@ class DatabaseTest {
     }
 
     /**
+     * Test retrieving an idea with a non-existent id
+     */
+    @Test
+    void getIdea_NonExistentID_ShouldReturnNull() {
+        Idea idea = db.getIdea(0);
+        assertNull(idea);
+    }
+
+    /**
      * Test updating an idea with an existing id
      */
     @Test
@@ -50,16 +86,41 @@ class DatabaseTest {
         String title = idea.getTitle();
         String description = idea.getDescription();
 
-        idea = db.updateIdea(idea.getId(), "title", null);
-        assertNotEquals(title, idea.getTitle());
-        title = idea.getTitle();
-
-        idea = db.updateIdea(idea.getId(), null, "description");
-        assertNotEquals(description, idea.getDescription());
-        description = idea.getDescription();
-
         idea = db.updateIdea(idea.getId(), "new title", "new description");
         assertNotEquals(title, idea.getTitle());
+        assertNotEquals(description, idea.getDescription());
+    }
+
+    /**
+     * Test updating an idea with a non-existent id
+     */
+    @Test
+    void updateIdea_NonExistentIDGiven_ShouldReturnNull() {
+        Idea idea = db.updateIdea(0, "new title", "new description");
+        assertNull(idea);
+    }
+
+    /**
+     * Test updating an idea with only title
+     */
+    @Test
+    void updateIdea_OnlyTitleGiven_ShouldReturnIdea() {
+        Idea idea = db.addIdea("test idea", "test idea description");
+        String title = idea.getTitle();
+
+        idea = db.updateIdea(idea.getId(), "title", null);
+        assertNotEquals(title, idea.getTitle());
+    }
+
+    /**
+     * Test updating an idea with only description
+     */
+    @Test
+    void updateIdea_OnlyDescriptionGiven_ShouldReturnIdea() {
+        Idea idea = db.addIdea("test idea", "test idea description");
+        String description = idea.getDescription();
+
+        idea = db.updateIdea(idea.getId(), null, "new description");
         assertNotEquals(description, idea.getDescription());
     }
 
@@ -86,6 +147,18 @@ class DatabaseTest {
     }
 
     /**
+     * Test getting a list of ideas with no ideas in the database
+     */
+    @Test
+    void listIdeas_EmptyDatabaseGiven_ShouldReturnArrayOf0Ideas() {
+        List<Idea> expected = new ArrayList<>();
+        List<Idea> ideas = db.listIdeas();
+
+        assertEquals(expected.size(), ideas.size());
+        assertEquals(expected, ideas);
+    }
+
+    /**
      * Test finding an idea by title with 3 ideas at the specified title
      */
     @Test
@@ -100,11 +173,24 @@ class DatabaseTest {
     }
 
     /**
+     * Test finding an idea by title with 0 ideas at the specified title
+     */
+    @Test
+    void findIdea_NonExistentItemsAtTitle_ShouldReturnArrayOf0Ideas() {
+        List<Idea> expected = new ArrayList<>();
+        for (int i = 0; i < 5; i++) db.addIdea("idea" + i, "idea description");
+        List<Idea> found = db.findIdea("filter");
+
+        assertEquals(expected.size(), found.size());
+        assertEquals(expected, found);
+    }
+
+    /**
      * Test inclusively filtering by time with a valid time range
      * @throws InterruptedException from sleeping
      */
     @Test
-    void filterRange_ValidTimeRangeGiven_ArrayOf3Ideas() throws InterruptedException {
+    void filterRangeInclusive_ValidTimeRangeGiven_ArrayOf3Ideas() throws InterruptedException {
         List<Idea> expected = new ArrayList<>();
         Timestamp from = null;
         Timestamp to = null;
@@ -124,11 +210,25 @@ class DatabaseTest {
 
         assertEquals(expected.size(), found.size());
         assertEquals(expected, found);
+    }
 
-        expected.remove(0);
-        expected.remove(1);
+    /**
+     * Test inclusively filtering by time with an invalid time range
+     * @throws InterruptedException from sleeping
+     */
+    @Test
+    void filterRangeInclusive_InvalidTimeRangeGiven_ArrayOf0Ideas() throws InterruptedException {
+        List<Idea> expected = new ArrayList<>();
+        Timestamp from = null;
+        Timestamp to = null;
 
-        found = db.filterRange(from, to, false);
+        for (int i = 0; i < 5; i++) {
+            Idea idea = db.addIdea("test idea", "test idea description");
+            if (i == 0) from = idea.getCreated();
+            if (i == 2) to = idea.getCreated();
+            TimeUnit.SECONDS.sleep(1);
+        }
+        List<Idea> found = db.filterRange(to, from, true);
 
         assertEquals(expected.size(), found.size());
         assertEquals(expected, found);
@@ -139,7 +239,7 @@ class DatabaseTest {
      * @throws InterruptedException from sleeping
      */
     @Test
-    void filterRange_ValidTimeRangeGiven_ArrayOf1Idea() throws InterruptedException {
+    void filterRangeExclusive_ValidTimeRangeGiven_ArrayOf1Idea() throws InterruptedException {
         List<Idea> expected = new ArrayList<>();
         Timestamp from = null;
         Timestamp to = null;
@@ -154,6 +254,28 @@ class DatabaseTest {
             TimeUnit.SECONDS.sleep(1);
         }
         List<Idea> found = db.filterRange(from, to, false);
+
+        assertEquals(expected.size(), found.size());
+        assertEquals(expected, found);
+    }
+
+    /**
+     * Test exclusively filtering by time with an invalid time range
+     * @throws InterruptedException from sleeping
+     */
+    @Test
+    void filterRangeExclusive_InvalidTimeRangeGiven_ArrayOf0Ideas() throws InterruptedException {
+        List<Idea> expected = new ArrayList<>();
+        Timestamp from = null;
+        Timestamp to = null;
+
+        for (int i = 0; i < 5; i++) {
+            Idea idea = db.addIdea("test idea", "test idea description");
+            if (i == 0) from = idea.getCreated();
+            if (i == 2) to = idea.getCreated();
+            TimeUnit.SECONDS.sleep(1);
+        }
+        List<Idea> found = db.filterRange(to, from, false);
 
         assertEquals(expected.size(), found.size());
         assertEquals(expected, found);
