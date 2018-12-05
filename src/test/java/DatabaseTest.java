@@ -18,23 +18,23 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Alex Krantz <alex@alexkrantz.com>
  * @version 1.0
  */
-class DatabaseTests {
+class DatabaseTest {
     private static Database db;
 
     /**
-     * Test adding an idea to the database
+     * Test adding an idea with title and description
      */
     @Test
-    void testAddIdea() {
+    void addIdea_TitleAndDescriptionGiven_ShouldReturnIdea() {
         Idea idea = db.addIdea("test idea", "test idea description");
         assertNotNull(idea);
     }
 
     /**
-     * Test retrieving an idea from the database
+     * Test retrieving an idea with an existing id
      */
     @Test
-    void testGetIdea() {
+    void getIdea_ExistingIDGiven_ShouldReturnIdea() {
         Idea origIdea = db.addIdea("test idea", "test idea description");
         Idea gotIdea = db.getIdea(origIdea.getId());
 
@@ -42,10 +42,10 @@ class DatabaseTests {
     }
 
     /**
-     * Test updating an idea in the database
+     * Test updating an idea with an existing id
      */
     @Test
-    void testUpdateIdea() {
+    void updateIdea_ExistingIDGiven_ShouldReturnIdea() {
         Idea idea = db.addIdea("test idea", "test idea description");
         String title = idea.getTitle();
         String description = idea.getDescription();
@@ -64,22 +64,19 @@ class DatabaseTests {
     }
 
     /**
-     * Test deleting an idea from the database
+     * Test deleting an idea with existing id
      */
     @Test
-    void testDeleteIdea() {
+    void deleteIdea_ExistingIDGiven_ShouldReturnTrue() {
         Idea origIdea = db.addIdea("test idea", "test idea description");
-        db.deleteIdea(origIdea.getId());
-
-        Idea gotIdea = db.getIdea(origIdea.getId());
-        assertNull(gotIdea);
+        assertTrue(db.deleteIdea(origIdea.getId()));
     }
 
     /**
-     * Test getting a list of ideas from the database
+     * Test getting a list of ideas with ideas in the database
      */
     @Test
-    void testListIdeas() {
+    void listIdeas_PopulatedDatabaseGiven_ShouldReturnArrayOf5Ideas() {
         List<Idea> expected = new ArrayList<>();
         for (int i = 0; i < 5; i++) expected.add(db.addIdea("idea" + i, "idea description" + i));
         List<Idea> ideas = db.listIdeas();
@@ -89,10 +86,10 @@ class DatabaseTests {
     }
 
     /**
-     * Test finding an idea by title
+     * Test finding an idea by title with 3 ideas at the specified title
      */
     @Test
-    void testFindIdea() {
+    void findIdea_ExistingItemsAtTitle_ShouldReturnArrayOf3Ideas() {
         List<Idea> expected = new ArrayList<>();
         for (int i = 0; i < 3; i++) expected.add(db.addIdea("filter" + i, "idea description"));
         for (int i = 0; i < 2; i++) db.addIdea("idea" + i, "idea description");
@@ -103,11 +100,11 @@ class DatabaseTests {
     }
 
     /**
-     * Test inclusively filtering by time
+     * Test inclusively filtering by time with a valid time range
      * @throws InterruptedException from sleeping
      */
     @Test
-    void testFilterRangeInclusive() throws InterruptedException {
+    void filterRange_ValidTimeRangeGiven_ArrayOf3Ideas() throws InterruptedException {
         List<Idea> expected = new ArrayList<>();
         Timestamp from = null;
         Timestamp to = null;
@@ -138,11 +135,11 @@ class DatabaseTests {
     }
 
     /**
-     * Test exclusively filtering by time
+     * Test exclusively filtering by time with a valid time range
      * @throws InterruptedException from sleeping
      */
     @Test
-    void testFilterRangeExclusive() throws InterruptedException {
+    void filterRange_ValidTimeRangeGiven_ArrayOf1Idea() throws InterruptedException {
         List<Idea> expected = new ArrayList<>();
         Timestamp from = null;
         Timestamp to = null;
