@@ -1,45 +1,45 @@
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.eclipse.jetty.http.HttpStatus;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
 import static spark.Spark.*;
 
 public class Main {
+    static Database db;
+
     public static void main(String[] args) {
         // Initialize database
-        Database db = new Database(System.getenv("CONNECTION_URL"), System.getenv("CONNECTION_USERNAME"), System.getenv("CONNECTION_PASSWORD"));
+        db = new Database(System.getenv("CONNECTION_URL"), System.getenv("CONNECTION_USERNAME"), System.getenv("CONNECTION_PASSWORD"));
 
         // Configure Spark
         port(Integer.parseInt(System.getenv("PORT")));
         staticFiles.location("/public");
+        exception(IllegalArgumentException.class, (e, request, response) -> {
+            response.status(HttpStatus.BAD_REQUEST_400);
+            response.body(new JsonTransformer().render(new ResponseError(HttpStatus.BAD_REQUEST_400, e)));
+        });
 
         // Setup routes
         get("/", (request, response) -> "Hello World!");
-        get("/api/*", (request, response) -> {
-            response.status(HttpStatus.NOT_FOUND_404);
-            return toJSON(newError("route does not exist"));
+
+        path("/api", () -> {
+            get("/ideas", IdeaApi.getIdeas, json());
+            post("/ideas", IdeaApi.createIdea, json());
+
+            path("/ideas", () -> {
+                get("/", IdeaApi.getIdeas, json());
+                post("/", IdeaApi.createIdea, json());
+                get("/:id", IdeaApi.getIdea, json());
+                put("/:id", IdeaApi.updateIdea, json());
+                delete("/:id", IdeaApi.deleteIdea, json());
+            });
         });
+
         get("*", (request, response) -> {
             response.status(HttpStatus.NOT_FOUND_404);
             return "Page does not exist";
         });
-    }
-
-    public static String toJSON(Object data) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.enable(SerializationFeature.INDENT_OUTPUT);
-            StringWriter sw = new StringWriter();
-            mapper.writeValue(sw, data);
-            return sw.toString();
-        } catch (IOException e) {
-            throw new RuntimeException("IOException while mapping object (" + data + ") to JSON");
-        }
     }
 
     public static Map<String, String> newError(String reason) {
@@ -47,5 +47,9 @@ public class Main {
         err.put("status", "error");
         err.put("reason", reason);
         return err;
+    }
+
+    public static JsonTransformer json() {
+        return new JsonTransformer();
     }
 }

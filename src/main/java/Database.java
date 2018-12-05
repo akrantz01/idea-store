@@ -7,7 +7,6 @@ import org.hibernate.cfg.Configuration;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Properties;
 
 public class Database {
@@ -85,6 +84,7 @@ public class Database {
         try {
             tx = session.beginTransaction();
             idea = session.get(Idea.class, id);
+            if (idea == null) return null;
 
             if (title != null) idea.setTitle(title);
             if (description != null) idea.setDescription(description);
@@ -100,13 +100,15 @@ public class Database {
         return idea;
     }
 
-    void deleteIdea(Integer id) {
+    boolean deleteIdea(Integer id) {
         Session session = factory.openSession();
         Transaction tx = null;
 
         try {
             tx = session.beginTransaction();
             Idea idea = session.get(Idea.class, id);
+            if (idea == null) return false;
+
             session.delete(idea);
             tx.commit();
         } catch (HibernateException e) {
@@ -115,6 +117,8 @@ public class Database {
         } finally {
             session.close();
         }
+
+        return true;
     }
 
     List<Idea> listIdeas() {
