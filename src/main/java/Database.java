@@ -7,6 +7,8 @@ import org.hibernate.cfg.Configuration;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
 
 public class Database {
     private static SessionFactory factory;
@@ -14,6 +16,22 @@ public class Database {
     public Database() {
         try {
             factory = new Configuration().configure().buildSessionFactory();
+        } catch (Throwable ex) {
+            System.err.println("Failed to create sessionFactory object. " + ex);
+            throw new ExceptionInInitializerError(ex);
+        }
+    }
+
+    public Database(String url, String username, String password) {
+        Properties p = new Properties();
+        if (url != null) if (!url.equals("")) p.setProperty("hibernate.connection.url", url);
+        if (username != null) if (!username.equals("")) p.setProperty("hibernate.connection.username", username);
+        if (password != null) if (!password.equals("")) p.setProperty("hibernate.connection.password", password);
+
+        try {
+            factory = new Configuration().configure()
+                    .setProperties(p)
+                    .buildSessionFactory();
         } catch (Throwable ex) {
             System.err.println("Failed to create sessionFactory object. " + ex);
             throw new ExceptionInInitializerError(ex);
