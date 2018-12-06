@@ -190,7 +190,7 @@ class DatabaseTest {
      * @throws InterruptedException from sleeping
      */
     @Test
-    void filterRangeInclusive_ValidTimeRangeGiven_ArrayOf3Ideas() throws InterruptedException {
+    void filterRangeInclusive_ValidTimeRangeGiven_ShouldReturnArrayOf3Ideas() throws InterruptedException {
         List<Idea> expected = new ArrayList<>();
         Timestamp from = null;
         Timestamp to = null;
@@ -217,7 +217,7 @@ class DatabaseTest {
      * @throws InterruptedException from sleeping
      */
     @Test
-    void filterRangeInclusive_InvalidTimeRangeGiven_ArrayOf0Ideas() throws InterruptedException {
+    void filterRangeInclusive_InvalidTimeRangeGiven_ShouldReturnArrayOf0Ideas() throws InterruptedException {
         List<Idea> expected = new ArrayList<>();
         Timestamp from = null;
         Timestamp to = null;
@@ -239,7 +239,7 @@ class DatabaseTest {
      * @throws InterruptedException from sleeping
      */
     @Test
-    void filterRangeExclusive_ValidTimeRangeGiven_ArrayOf1Idea() throws InterruptedException {
+    void filterRangeExclusive_ValidTimeRangeGiven_ShouldReturnArrayOf1Idea() throws InterruptedException {
         List<Idea> expected = new ArrayList<>();
         Timestamp from = null;
         Timestamp to = null;
@@ -264,7 +264,7 @@ class DatabaseTest {
      * @throws InterruptedException from sleeping
      */
     @Test
-    void filterRangeExclusive_InvalidTimeRangeGiven_ArrayOf0Ideas() throws InterruptedException {
+    void filterRangeExclusive_InvalidTimeRangeGiven_ShouldReturnArrayOf0Ideas() throws InterruptedException {
         List<Idea> expected = new ArrayList<>();
         Timestamp from = null;
         Timestamp to = null;
