@@ -307,6 +307,7 @@ class DatabaseTest {
         try {
             tx = session.beginTransaction();
             session.createQuery("DELETE FROM Idea").executeUpdate();
+            session.createSQLQuery("ALTER TABLE ideas AUTO_INCREMENT = 1").executeUpdate();
             tx.commit();
         } catch (HibernateException e) {
             if (tx != null) tx.rollback();
