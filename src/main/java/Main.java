@@ -19,14 +19,17 @@ public class Main {
 
         // Configure Spark
         port(Integer.parseInt(System.getenv("PORT")));
-        staticFiles.location("/public");
+        staticFileLocation("/public");
         exception(IllegalArgumentException.class, (e, request, response) -> {
             response.status(HttpStatus.BAD_REQUEST_400);
             response.body(new JsonTransformer().render(new ResponseError(HttpStatus.BAD_REQUEST_400, e)));
         });
 
         // Setup routes
-        get("/", (request, response) -> "Hello World!");
+        get("/", (request, response) -> {
+            response.redirect("index.html");
+            return null;
+        });
 
         path("/api", () -> {
             get("/ideas", IdeaApi.getIdeas, json());
