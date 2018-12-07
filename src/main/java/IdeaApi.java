@@ -35,7 +35,13 @@ class IdeaApi {
     /**
      * Post request for creating an idea
      */
-    static Route createIdea = (Request request, Response response) -> Main.db.addIdea(request.queryParams("title"), request.queryParams("description"));
+    static Route createIdea = (Request request, Response response) -> {
+        Idea idea = Main.db.addIdea(request.queryParams("title"), request.queryParams("description"));
+        if (idea != null) return idea;
+
+        response.status(HttpStatus.BAD_REQUEST_400);
+        return new ResponseError(HttpStatus.BAD_REQUEST_400, "expected query parameters 'title' and 'description', got title='%s' and description='%s'", request.queryParams("title"), request.queryParams("description"));
+    };
 
     /**
      * Put request for updating an idea
