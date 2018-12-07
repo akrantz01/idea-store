@@ -20,6 +20,7 @@ class IdeaApiTest {
      * Test listing ideas with normal request
      */
     @Test
+    @DisplayName("GET /api/ideas: normal request")
     void getIdeas_NormalRequestGiven_ShouldReturnArrayOf3Ideas() {
         for (int i = 0; i < 5; i++) Main.db.addIdea("test idea " + i, "test idea description");
 
@@ -39,6 +40,7 @@ class IdeaApiTest {
      * Test getting a specific idea with a valid id
      */
     @Test
+    @DisplayName("GET /api/ideas/%id: valid id")
     void getIdea_ValidIdeaIDGiven_ShouldReturnIdea() {
         Idea i = Main.db.addIdea("test idea", "test idea description");
 
@@ -55,6 +57,7 @@ class IdeaApiTest {
      * Test getting a specific idea with an invalid id
      */
     @Test
+    @DisplayName("GET /api/ideas/%id: invalid id")
     void getIdea_InvalidIdeaIDGiven_ShouldReturnErrorMessage() {
         TestResponse res = TestResponse.request("GET", "/api/ideas/1");
         assertNotNull(res);
@@ -69,6 +72,7 @@ class IdeaApiTest {
      * Test creating idea with test and description
      */
     @Test
+    @DisplayName("POST /api/ideas: title and description")
     void postIdea_TitleAndDescriptionGiven_ShouldReturnCreated() {
         TestResponse res = TestResponse.request("POST", "/api/ideas?title=test%20title&description=test%20description");
         assertNotNull(res);
@@ -83,6 +87,7 @@ class IdeaApiTest {
      * Test creating idea with only title
      */
     @Test
+    @DisplayName("POST /api/ideas: only title")
     void postIdea_OnlyTitleGiven_ShouldReturnErrorMessage() {
         TestResponse res = TestResponse.request("POST", "/api/ideas?title=test%20title");
         assertNotNull(res);
@@ -97,6 +102,7 @@ class IdeaApiTest {
      * Test creating idea with only description
      */
     @Test
+    @DisplayName("POST /api/ideas: only description")
     void postIdea_OnlyDescriptionGiven_ShouldReturnErrorMessage() {
         TestResponse res = TestResponse.request("POST", "/api/ideas?description=test%20description");
         assertNotNull(res);
@@ -111,6 +117,7 @@ class IdeaApiTest {
      * Test creating idea with no parameters
      */
     @Test
+    @DisplayName("POST /api/ideas: no parameters")
     void postIdea_NoParametersGiven_ShouldReturnErrorMessage() {
         TestResponse res = TestResponse.request("POST", "/api/ideas");
         assertNotNull(res);
@@ -125,6 +132,7 @@ class IdeaApiTest {
      * Test updating idea with valid id, title and description
      */
     @Test
+    @DisplayName("PUT /api/ideas/%id: valid id with title & description")
     void updateIdea_ValidIDTitleAndDescriptionGiven_ShouldReturnIdea() {
         Idea i = Main.db.addIdea("test idea", "test idea description");
 
@@ -141,6 +149,7 @@ class IdeaApiTest {
      * Test updating idea with valid id and title
      */
     @Test
+    @DisplayName("PUT /api/ideas/%id: valid id with title")
     void updateIdea_ValidIDAndTitleGiven_ShouldReturnIdea() {
         Idea i = Main.db.addIdea("test idea", "test idea description");
 
@@ -157,6 +166,7 @@ class IdeaApiTest {
      * Test updating idea with valid id and description
      */
     @Test
+    @DisplayName("PUT /api/ideas/%id: valid id with description")
     void updateIdea_ValidIDAndDescriptionGiven_ShouldReturnIdea() {
         Idea i = Main.db.addIdea("test idea", "test idea description");
 
@@ -173,6 +183,7 @@ class IdeaApiTest {
      * Test updating idea with valid id
      */
     @Test
+    @DisplayName("PUT /api/ideas/%id: valid id only")
     void updateIdea_ValidIDGiven_ShouldReturnIdea() {
         Idea i = Main.db.addIdea("test idea", "test idea description");
 
@@ -189,6 +200,7 @@ class IdeaApiTest {
      * Test updating idea with invalid id, title and description
      */
     @Test
+    @DisplayName("PUT /api/ideas/%id: invalid id with title & description")
     void updateIdea_InvalidIDTitleAndDescriptionGiven_ShouldReturnErrorMessage() {
         TestResponse res = TestResponse.request("PUT", "/api/ideas/0");
         assertNotNull(res);
@@ -203,6 +215,7 @@ class IdeaApiTest {
      * Test updating idea with invalid id and title
      */
     @Test
+    @DisplayName("PUT /api/ideas/%id: invalid id with title")
     void updateIdea_InvalidIDAndTitleGiven_ShouldReturnErrorMessage() {
         TestResponse res = TestResponse.request("PUT", "/api/ideas/0");
         assertNotNull(res);
@@ -217,6 +230,7 @@ class IdeaApiTest {
      * Test updating idea with invalid id and description
      */
     @Test
+    @DisplayName("PUT /api/ideas/%id: invalid id with description")
     void updateIdea_InvalidIDAndDescriptionGiven_ShouldReturnErrorMessage() {
         TestResponse res = TestResponse.request("PUT", "/api/ideas/0");
         assertNotNull(res);
@@ -231,6 +245,7 @@ class IdeaApiTest {
      * Test updating idea with invalid id
      */
     @Test
+    @DisplayName("PUT /api/ideas/%id: invalid id only")
     void updateIdea_InvalidIDGiven_ShouldReturnErrorMessage() {
         TestResponse res = TestResponse.request("PUT", "/api/ideas/0");
         assertNotNull(res);
@@ -245,6 +260,7 @@ class IdeaApiTest {
      * Test deleting idea with valid id
      */
     @Test
+    @DisplayName("DELETE /api/ideas/%id: valid id")
     void deleteIdea_ValidIDGiven_ShouldReturnSuccess() {
         Idea i = Main.db.addIdea("test idea", "test idea description");
 
@@ -260,6 +276,7 @@ class IdeaApiTest {
      * Test deleting idea with invalid id
      */
     @Test
+    @DisplayName("DELETE /api/ideas/%id: invalid id")
     void deleteIdea_InvalidIDGiven_ShouldReturnErrorMessage() {
         TestResponse res = TestResponse.request("DELETE", "/api/ideas/0");
         assertNotNull(res);

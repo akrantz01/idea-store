@@ -5,6 +5,7 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
@@ -25,6 +26,7 @@ class DatabaseTest {
      * Test adding an idea with title and description
      */
     @Test
+    @DisplayName("addIdea: title and description")
     void addIdea_TitleAndDescriptionGiven_ShouldReturnIdea() {
         Idea idea = db.addIdea("test idea", "test idea description");
         assertNotNull(idea);
@@ -34,6 +36,7 @@ class DatabaseTest {
      * Test adding an idea with only title
      */
     @Test
+    @DisplayName("addIdea: only title")
     void addIdea_OnlyTitle_ShouldReturnNull() {
         Idea idea = db.addIdea("test idea", null);
         assertNull(idea);
@@ -43,6 +46,7 @@ class DatabaseTest {
      * Test adding an idea with only description
      */
     @Test
+    @DisplayName("addIdea: only description")
     void addIdea_OnlyDescription_ShouldReturnNull() {
         Idea idea = db.addIdea(null, "test idea description");
         assertNull(idea);
@@ -52,6 +56,7 @@ class DatabaseTest {
      * Test adding an idea with title and description null
      */
     @Test
+    @DisplayName("addIdea: both null")
     void addIdea_TitleAndDescriptionNull_ShouldReturnNull() {
         Idea idea = db.addIdea(null, null);
         assertNull(idea);
@@ -61,6 +66,7 @@ class DatabaseTest {
      * Test retrieving an idea with an existing id
      */
     @Test
+    @DisplayName("getIdea: valid id")
     void getIdea_ExistingIDGiven_ShouldReturnIdea() {
         Idea origIdea = db.addIdea("test idea", "test idea description");
         Idea gotIdea = db.getIdea(origIdea.getId());
@@ -72,6 +78,7 @@ class DatabaseTest {
      * Test retrieving an idea with a non-existent id
      */
     @Test
+    @DisplayName("getIdea: invalid id")
     void getIdea_NonExistentID_ShouldReturnNull() {
         Idea idea = db.getIdea(0);
         assertNull(idea);
@@ -81,6 +88,7 @@ class DatabaseTest {
      * Test updating an idea with an existing id
      */
     @Test
+    @DisplayName("updateIdea: valid id with title and description")
     void updateIdea_ExistingIDGiven_ShouldReturnIdea() {
         Idea idea = db.addIdea("test idea", "test idea description");
         String title = idea.getTitle();
@@ -95,6 +103,7 @@ class DatabaseTest {
      * Test updating an idea with a non-existent id
      */
     @Test
+    @DisplayName("updateIdea: invalid id with title and description")
     void updateIdea_NonExistentIDGiven_ShouldReturnNull() {
         Idea idea = db.updateIdea(0, "new title", "new description");
         assertNull(idea);
@@ -104,6 +113,7 @@ class DatabaseTest {
      * Test updating an idea with only title
      */
     @Test
+    @DisplayName("updateIdea: valid id with title")
     void updateIdea_OnlyTitleGiven_ShouldReturnIdea() {
         Idea idea = db.addIdea("test idea", "test idea description");
         String title = idea.getTitle();
@@ -116,6 +126,7 @@ class DatabaseTest {
      * Test updating an idea with only description
      */
     @Test
+    @DisplayName("updateIdea: valid id with description")
     void updateIdea_OnlyDescriptionGiven_ShouldReturnIdea() {
         Idea idea = db.addIdea("test idea", "test idea description");
         String description = idea.getDescription();
@@ -128,6 +139,7 @@ class DatabaseTest {
      * Test deleting an idea with existing id
      */
     @Test
+    @DisplayName("deleteIdea: valid id")
     void deleteIdea_ExistingIDGiven_ShouldReturnTrue() {
         Idea origIdea = db.addIdea("test idea", "test idea description");
         assertTrue(db.deleteIdea(origIdea.getId()));
@@ -137,6 +149,7 @@ class DatabaseTest {
      * Test getting a list of ideas with ideas in the database
      */
     @Test
+    @DisplayName("listIdeas: items in database")
     void listIdeas_PopulatedDatabaseGiven_ShouldReturnArrayOf5Ideas() {
         List<Idea> expected = new ArrayList<>();
         for (int i = 0; i < 5; i++) expected.add(db.addIdea("idea" + i, "idea description" + i));
@@ -150,6 +163,7 @@ class DatabaseTest {
      * Test getting a list of ideas with no ideas in the database
      */
     @Test
+    @DisplayName("listIdeas: empty database")
     void listIdeas_EmptyDatabaseGiven_ShouldReturnArrayOf0Ideas() {
         List<Idea> expected = new ArrayList<>();
         List<Idea> ideas = db.listIdeas();
@@ -162,6 +176,7 @@ class DatabaseTest {
      * Test finding an idea by title with 3 ideas at the specified title
      */
     @Test
+    @DisplayName("findIdea: idea(s) with title")
     void findIdea_ExistingItemsAtTitle_ShouldReturnArrayOf3Ideas() {
         List<Idea> expected = new ArrayList<>();
         for (int i = 0; i < 3; i++) expected.add(db.addIdea("filter" + i, "idea description"));
@@ -176,6 +191,7 @@ class DatabaseTest {
      * Test finding an idea by title with 0 ideas at the specified title
      */
     @Test
+    @DisplayName("findIdea: no idea(s) with title")
     void findIdea_NonExistentItemsAtTitle_ShouldReturnArrayOf0Ideas() {
         List<Idea> expected = new ArrayList<>();
         for (int i = 0; i < 5; i++) db.addIdea("idea" + i, "idea description");
@@ -190,6 +206,7 @@ class DatabaseTest {
      * @throws InterruptedException from sleeping
      */
     @Test
+    @DisplayName("filterRange: valid range (inclusive)")
     void filterRangeInclusive_ValidTimeRangeGiven_ShouldReturnArrayOf3Ideas() throws InterruptedException {
         List<Idea> expected = new ArrayList<>();
         Timestamp from = null;
@@ -217,6 +234,7 @@ class DatabaseTest {
      * @throws InterruptedException from sleeping
      */
     @Test
+    @DisplayName("filterRange: invalid range (inclusive)")
     void filterRangeInclusive_InvalidTimeRangeGiven_ShouldReturnArrayOf0Ideas() throws InterruptedException {
         List<Idea> expected = new ArrayList<>();
         Timestamp from = null;
@@ -239,6 +257,7 @@ class DatabaseTest {
      * @throws InterruptedException from sleeping
      */
     @Test
+    @DisplayName("filterRange: valid range (exclusive)")
     void filterRangeExclusive_ValidTimeRangeGiven_ShouldReturnArrayOf1Idea() throws InterruptedException {
         List<Idea> expected = new ArrayList<>();
         Timestamp from = null;
@@ -264,6 +283,7 @@ class DatabaseTest {
      * @throws InterruptedException from sleeping
      */
     @Test
+    @DisplayName("filterRange: invalid range (exclusive)")
     void filterRangeExclusive_InvalidTimeRangeGiven_ShouldReturnArrayOf0Ideas() throws InterruptedException {
         List<Idea> expected = new ArrayList<>();
         Timestamp from = null;
