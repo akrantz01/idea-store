@@ -3,6 +3,8 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+import java.sql.Timestamp;
+
 /**
  * @author Alex Krantz <alex@alexkrantz.com>
  * @version 1.0
@@ -77,5 +79,28 @@ class IdeaApi {
 
         response.status(HttpStatus.BAD_REQUEST_400);
         return new ResponseError(HttpStatus.BAD_REQUEST_400, "idea with id '%s' does not exist", id.toString());
+    };
+
+    /**
+     * Get request for ideas filtering by title
+     */
+    static Route getFindIdea = (Request request, Response response) -> Main.db.findIdea(request.queryParams("title"));
+
+    /**
+     * Get request for ideas filtering by timestamp
+     */
+    static Route getFilterIdea = (Request request, Response response) -> {
+        boolean i = Boolean.parseBoolean(request.queryParams("inclusive"));
+        Timestamp f = null;
+        Timestamp t = null;
+        try {
+            t = new Timestamp(Long.parseLong(request.queryParams("to")));
+        } catch (NumberFormatException ignored) {}
+
+        try {
+            f = new Timestamp(Long.parseLong(request.queryParams("from")));
+        } catch (NumberFormatException ignored) {}
+
+        return Main.db.filterRange(f, t, i);
     };
 }

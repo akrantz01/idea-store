@@ -1,8 +1,5 @@
 import org.eclipse.jetty.http.HttpStatus;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static spark.Spark.*;
 
 /**
@@ -38,6 +35,8 @@ public class Main {
             path("/ideas", () -> {
                 get("/", IdeaApi.getIdeas, json());
                 post("/", IdeaApi.createIdea, json());
+                get("/find", IdeaApi.getFindIdea, json());
+                get("/filter", IdeaApi.getFilterIdea, json());
                 get("/:id", IdeaApi.getIdea, json());
                 put("/:id", IdeaApi.updateIdea, json());
                 delete("/:id", IdeaApi.deleteIdea, json());
