@@ -19,12 +19,16 @@ const styles = theme => ({
 });
 
 class ListProjects extends React.Component {
-    state = {
-        projects: [],
-        isLoading: false,
-        error: null,
-        expanded: null
-    };
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            projects: [],
+            isLoading: false,
+            error: null,
+            expanded: null
+        };
+    }
 
     expandPanel = panel => (event, expanded) => {
         this.setState({
@@ -33,6 +37,11 @@ class ListProjects extends React.Component {
     };
 
     componentDidMount() {
+        this.getProjects();
+    }
+
+    getProjects() {
+        console.log(this.state);
         this.setState({ isLoading: true });
 
         axios.get("http://localhost:8080/api/ideas")
@@ -43,7 +52,7 @@ class ListProjects extends React.Component {
             .catch(error => this.setState({
                 error,
                 isLoading: false
-            }))
+            }));
     }
 
     render() {
@@ -53,7 +62,7 @@ class ListProjects extends React.Component {
             <div>
                 <Typography variant="h3">Projects</Typography>
                 <br/>
-                <Button variant="contained" color="primary">Refresh</Button>
+                <Button variant="contained" color="primary" onClick={this.getProjects.bind(this)}>Refresh</Button>
                 <br/><br/>
                 {this.state.isLoading &&
                     <div>
