@@ -13,7 +13,10 @@ class IdeaApi {
     /**
      * Get request for listing all ideas
      */
-    static Route getIdeas = (Request request, Response response) -> Main.db.listIdeas();
+    static Route getIdeas = (Request request, Response response) -> {
+        response.header("Access-Control-Allow-Origin", "*");
+        return Main.db.listIdeas();
+    };
 
     /**
      * Get request for a specific Idea
