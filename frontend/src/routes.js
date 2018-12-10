@@ -1,4 +1,4 @@
-import { ViewList, PlaylistAdd, AccountBox } from '@material-ui/icons';
+import { ViewList, PlaylistAdd } from '@material-ui/icons';
 import ListProjects from './components/ListProjects';
 
 const Routes = [
@@ -15,14 +15,6 @@ const Routes = [
         sidebarName: "Add Project",
         navBarName: "Add Project",
         icon: PlaylistAdd,
-        component: "",
-        exact: false
-    },
-    {
-        path: "/login",
-        sidebarName: "Login",
-        navBarName: "Login",
-        icon: AccountBox,
         component: "",
         exact: false
     }
