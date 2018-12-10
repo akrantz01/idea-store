@@ -41,7 +41,6 @@ class ListProjects extends React.Component {
     }
 
     getProjects() {
-        console.log(this.state);
         this.setState({ isLoading: true });
 
         axios.get("http://localhost:8080/api/ideas")
