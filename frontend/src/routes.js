@@ -1,23 +1,21 @@
-import { ViewList, PlaylistAdd } from '@material-ui/icons';
-import ListProjects from './components/ListProjects';
+import React from 'react';
+import { Route, BrowserRouter } from 'react-router-dom';
+import App from './App';
+import Home from './components/Home';
+import Callback from './components/Callback';
+import Auth from './components/Auth';
+import history from './history';
 
-const Routes = [
-    {
-        path: "/",
-        sidebarName: "View Projects",
-        navBarName: "View Projects",
-        icon: ViewList,
-        component: ListProjects,
-        exact: true
-    },
-    {
-        path: "/add",
-        sidebarName: "Add Project",
-        navBarName: "Add Project",
-        icon: PlaylistAdd,
-        component: "",
-        exact: false
-    }
-];
+const auth = new Auth();
 
-export default Routes;
+export const makeMainRoutes = () => {
+    return (
+        <BrowserRouter history={history} component={App}>
+            <div>
+                <Route path="/" render={(props) => <App auth={auth} {...props} />} />
+                <Route path="/home" render={(props) => <Home auth={auth} {...props} />} />
+                <Route path="/callback" render={(props) => <Callback {...props} />} />
+            </div>
+        </BrowserRouter>
+    );
+};

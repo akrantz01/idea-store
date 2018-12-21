@@ -1,10 +1,11 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import { makeMainRoutes } from "./routes";
 import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const routes = makeMainRoutes();
+
+ReactDOM.render(routes, document.getElementById('root'));
 
 // Enable service worker for PWA
 serviceWorker.register();
