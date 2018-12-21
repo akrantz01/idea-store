@@ -1,12 +1,24 @@
 import React, { Component } from 'react';
-import {Card, Elevation, H3, Button} from "@blueprintjs/core";
+import {Card, Elevation, H3, H4, H6, Button, MenuItem, FormGroup, Switch} from "@blueprintjs/core";
+import {Suggest} from "@blueprintjs/select";
+import { filterProject, renderProject } from './Project';
 import ProjectItem from "./ProjectItem";
 
 class Home extends Component {
     state = {
         refreshing: false,
-        projects: []
+        projects: [],
+        project: null,
+        filters: {
+            completed: false,
+            working: true,
+            queued: true
+        }
     };
+
+    componentDidMount() {
+        this.refreshProjects();
+    }
 
     refreshProjects() {
         this.setState({refreshing: true});
@@ -74,9 +86,31 @@ class Home extends Component {
         this.setState({projects: projects});
     }
 
+    renderInputValue = (project) => project.title;
+
+    handleSearchChange = (project) => this.setState({project: project});
+
+    handleFilterChange(filter) {
+        switch (filter.target.name) {
+            case "cb-completed":
+                this.setState({filters: {...this.state.filters, completed: !this.state.filters.completed}});
+                break;
+
+            case "cb-working":
+                this.setState({filters: {...this.state.filters, working: !this.state.filters.working}});
+                break;
+
+            case "cb-queued":
+                this.setState({filters: {...this.state.filters, queued: !this.state.filters.queued}});
+                break;
+
+            default:
+                break;
+        }
+    }
+
     render() {
         const { isAuthenticated } = this.props.auth;
-
         const style = {
             heading_card: {
                 margin: "10px"
@@ -101,7 +135,21 @@ class Home extends Component {
                         are running (if they are). If you would like to submit an idea
                         for a project, please login. Below, you can search for and filter
                         any projects.</p>
-                    <Button text="Refresh Projects" intent="primary" icon="refresh" className="bp3-small" loading={this.state.refreshing} onClick={this.refreshProjects.bind(this)} />
+                    <Button text="Refresh Projects" intent="primary" icon="refresh" className="bp3-small"
+                            loading={this.state.refreshing} onClick={this.refreshProjects.bind(this)} />
+                </Card>
+
+                <Card elevation={Elevation.TWO} style={style.heading_card}>
+                    <H4>Search</H4>
+                    <Suggest inputValueRenderer={this.renderInputValue} items={this.state.projects}
+                             itemRenderer={renderProject} onItemSelect={this.handleSearchChange}
+                             popoverProps={{ minimal: true}} noResults={<MenuItem text={"No results."} disabled={true}/>}
+                             itemPredicate={filterProject} inputProps={{ leftIcon: "search" }}/>
+                    <br/><br/>
+                    <H6>Filters:</H6>
+                    <Switch name="cb-completed" inline={true} label="Completed" checked={this.state.filters.completed} onChange={this.handleFilterChange.bind(this)}/>
+                    <Switch name="cb-working" inline={true} label="In Progress" checked={this.state.filters.working} onChange={this.handleFilterChange.bind(this)}/>
+                    <Switch name="cb-queued" inline={true} label="Queued" checked={this.state.filters.queued} onChange={this.handleFilterChange.bind(this)}/>
                 </Card>
 
                 {this.state.projects.map((project, key) => <ProjectItem authenticated={isAuthenticated()} data={project}

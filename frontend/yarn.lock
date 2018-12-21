@@ -805,6 +805,15 @@
     classnames "^2.2"
     tslib "^1.9.0"
 
+"@blueprintjs/select@^3.4.0":
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/select/-/select-3.4.0.tgz#eead75796fdbe8273bb52b1d6ae0dc2816579f6b"
+  integrity sha512-lWPioIs95cPOtbJjPZhO+B5u2dTiOCWyl5fAx8klbgrDppAXSbwpzCbpzD8+5LsbA5xXNRt8Qhss3pX9jE6XJg==
+  dependencies:
+    "@blueprintjs/core" "^3.10.0"
+    classnames "^2.2"
+    tslib "^1.9.0"
+
 "@csstools/convert-colors@^1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
