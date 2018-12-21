@@ -26,8 +26,11 @@ class App extends React.Component {
                     <Navbar.Heading>Projects Storage</Navbar.Heading>
                     <Navbar.Divider/>
                     <Button className="bp3-minimal" icon="home" text="Home" />
-                    { !isAuthenticated() && <Button className="bp3-minimal" icon="user" text="Login" onClick={this.login.bind(this)}/>}
-                    { isAuthenticated() && <Button className="bp3-minimal" icon="user" text="Logout" onClick={this.logout.bind(this)}/> }
+                </Navbar.Group>
+
+                <Navbar.Group align={ALIGNMENT.RIGHT}>
+                    { !isAuthenticated() && <Button className="bp3-minimal" icon="user" text="Login" intent="primary" onClick={this.login.bind(this)}/> }
+                    { isAuthenticated() && <Button className="bp3-minimal" icon="user" text="Logout" intent="danger" onClick={this.logout.bind(this)}/> }
                 </Navbar.Group>
             </Navbar>
         </div>
