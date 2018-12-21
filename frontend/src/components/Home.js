@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Card, Elevation, H3, H4, H6, Button, MenuItem, Switch} from "@blueprintjs/core";
+import {Card, Elevation, H3, H4, H6, Button, MenuItem, Switch, Navbar, Alignment} from "@blueprintjs/core";
 import {MultiSelect} from "@blueprintjs/select";
 import { filterProject, highlightText } from './Project';
 import ProjectItem from "./ProjectItem";
@@ -10,7 +10,6 @@ class Home extends Component {
         projects: [],
         selectedProjects: [],
         displayedProjects: [],
-        project: null,
         filters: {
             completed: false,
             working: true,
@@ -21,6 +20,21 @@ class Home extends Component {
     componentDidMount() {
         this.refreshProjects();
         document.evaluate("//input[@class='bp3-input-ghost']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.style.width = "200px";
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevState.selectedProjects.length !== this.state.selectedProjects.length || prevState.projects.length !== this.state.projects.length || prevState.filters !== this.state.filters) {
+            if (this.state.selectedProjects.length === 0) this.setState({displayedProjects: this.filterProjects(this.state.projects.slice())});
+            else this.setState({displayedProjects: this.filterProjects(this.state.selectedProjects.slice())});
+        }
+    }
+
+    filterProjects(projects) {
+        return projects.filter((p) => {
+            if (this.state.filters.queued && p.status === "queued") return true;
+            if (this.state.filters.working && p.status === "working") return true;
+            return this.state.filters.completed && p.status === "completed";
+        });
     }
 
     refreshProjects() {
@@ -129,13 +143,8 @@ class Home extends Component {
             heading_card: {
                 margin: "10px"
             },
-            item: {
-                card: {
-                    margin: "5px 10px",
-                },
-                info: {
-                    boxShadow: "none"
-                }
+            dne_card: {
+                margin: "5px 10px"
             }
         };
         const clearTags = this.state.selectedProjects.length > 0 ? <Button icon="cross" minimal={true} onClick={this.handleClearTags.bind(this)}/> : null;
@@ -177,8 +186,24 @@ class Home extends Component {
                     <Switch name="cb-queued" inline={true} label="Queued" checked={this.state.filters.queued} onChange={this.handleFilterChange.bind(this)}/>
                 </Card>
 
-                {this.state.projects.map((project, key) => <ProjectItem authenticated={isAuthenticated()} data={project}
-                                                                        key={key} onDelete={this.deleteProject.bind(this)} onEdit={this.editProject.bind(this)}/>)}
+                {this.state.displayedProjects.length > 0 && this.state.displayedProjects.map((project, key) =>
+                    <ProjectItem authenticated={isAuthenticated()} data={project} key={key} onDelete={this.deleteProject.bind(this)}
+                                 onEdit={this.editProject.bind(this)}/>)}
+
+                {this.state.displayedProjects.length === 0 && (
+                    <Card elevation={Elevation.ONE} style={style.dne_card}>
+                        <Navbar style={{ boxShadow: "none" }}>
+                            <Navbar.Group align={Alignment.LEFT}>
+                                <Navbar.Heading style={{ fontSize: "18px" }}><b>No Projects in Database</b></Navbar.Heading>
+                            </Navbar.Group>
+
+                            <Navbar.Group align={Alignment.RIGHT}>
+                                <Button text="Refresh Projects" intent="primary" icon="refresh" className="bp3-small"
+                                        loading={this.state.refreshing} onClick={this.refreshProjects.bind(this)} />
+                            </Navbar.Group>
+                        </Navbar>
+                    </Card>
+                )}
             </div>
         );
     }
