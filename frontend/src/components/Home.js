@@ -17,30 +17,61 @@ class Home extends Component {
                 refreshing: false,
                 projects: [
                     {
+                        id: 1,
                         status_date: new Date().toDateString(),
                         status: "completed",
                         title: "Completed Project",
                         description: "This is a test project. It is solely for testing purposes. A user should never see it.",
-                        author: "Test User"
+                        author: "Test User",
+                        added_date: new Date().toDateString(),
+                        edited_date: false
                     },
                     {
+                        id: 2,
                         status_date: new Date().toDateString(),
                         status: "working",
                         title: "In Progress Project",
                         description: "This is a test project. It is solely for testing purposes. A user should never see it.",
-                        author: "Test User"
+                        author: "Test User",
+                        added_date: new Date().toDateString(),
+                        edited_date: false
                     },
                     {
+                        id: 3,
                         status_date: new Date().toDateString(),
                         status: "queued",
                         title: "Queued Project",
                         description: "This is a test project. It is solely for testing purposes. A user should never see it.",
-                        author: "Test User"
+                        author: "Test User",
+                        added_date: new Date().toDateString(),
+                        edited_date: false
                     }
                 ]
             });
 
         }, 1000);
+    }
+
+    deleteProject(id) {
+        let projects = [];
+        for (let p of this.state.projects) {
+            if (p.id !== id) {
+                projects.push(p);
+            }
+        }
+        this.setState({projects: projects});
+    }
+
+    editProject(id, data) {
+        let projects = this.state.projects.slice();
+        for (let p in projects) {
+            if (projects[p].id === id) {
+                projects[p].title = data.title;
+                projects[p].description = data.description;
+                projects[p].edited_date = new Date().toDateString();
+            }
+        }
+        this.setState({projects: projects});
     }
 
     render() {
@@ -73,7 +104,8 @@ class Home extends Component {
                     <Button text="Refresh Projects" intent="primary" icon="refresh" className="bp3-small" loading={this.state.refreshing} onClick={this.refreshProjects.bind(this)} />
                 </Card>
 
-                {this.state.projects.map((project, key) => <ProjectItem authenticated={isAuthenticated()} data={project} key={key}/>)}
+                {this.state.projects.map((project, key) => <ProjectItem authenticated={isAuthenticated()} data={project}
+                                                                        key={key} onDelete={this.deleteProject.bind(this)} onEdit={this.editProject.bind(this)}/>)}
             </div>
         );
     }
