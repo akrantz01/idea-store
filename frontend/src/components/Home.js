@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
-import {Card, Elevation, H3, H4, H6, Button, MenuItem, FormGroup, Switch} from "@blueprintjs/core";
-import {Suggest} from "@blueprintjs/select";
-import { filterProject, renderProject } from './Project';
+import {Card, Elevation, H3, H4, H6, Button, MenuItem, Switch} from "@blueprintjs/core";
+import {MultiSelect} from "@blueprintjs/select";
+import { filterProject, highlightText } from './Project';
 import ProjectItem from "./ProjectItem";
 
 class Home extends Component {
     state = {
         refreshing: false,
         projects: [],
+        selectedProjects: [],
+        displayedProjects: [],
         project: null,
         filters: {
             completed: false,
@@ -18,6 +20,7 @@ class Home extends Component {
 
     componentDidMount() {
         this.refreshProjects();
+        document.evaluate("//input[@class='bp3-input-ghost']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.style.width = "200px";
     }
 
     refreshProjects() {
@@ -86,10 +89,6 @@ class Home extends Component {
         this.setState({projects: projects});
     }
 
-    renderInputValue = (project) => project.title;
-
-    handleSearchChange = (project) => this.setState({project: project});
-
     handleFilterChange(filter) {
         switch (filter.target.name) {
             case "cb-completed":
@@ -109,6 +108,21 @@ class Home extends Component {
         }
     }
 
+    renderTag = (project) => project.title;
+
+    handleTagRemove(_tag, index) {
+        this.setState({selectedProjects: this.state.selectedProjects.filter((_p, i) => i !== index)});
+    }
+
+    handleProjectSelect(project) {
+        if (!this.isProjectSelected(project)) this.selectProject(project);
+        else this.deselectProject(this.getSelectedProjectIndex(project));
+    }
+
+    handleClearTags() {
+        this.setState({selectedProjects: []})
+    }
+
     render() {
         const { isAuthenticated } = this.props.auth;
         const style = {
@@ -124,6 +138,7 @@ class Home extends Component {
                 }
             }
         };
+        const clearTags = this.state.selectedProjects.length > 0 ? <Button icon="cross" minimal={true} onClick={this.handleClearTags.bind(this)}/> : null;
 
         return (
             <div className="container">
@@ -141,10 +156,20 @@ class Home extends Component {
 
                 <Card elevation={Elevation.TWO} style={style.heading_card}>
                     <H4>Search</H4>
-                    <Suggest inputValueRenderer={this.renderInputValue} items={this.state.projects}
-                             itemRenderer={renderProject} onItemSelect={this.handleSearchChange}
-                             popoverProps={{ minimal: true}} noResults={<MenuItem text={"No results."} disabled={true}/>}
-                             itemPredicate={filterProject} inputProps={{ leftIcon: "search" }}/>
+                    <MultiSelect
+                        initialContent={undefined}
+                        itemPredicate={filterProject}
+                        itemRenderer={this.renderProject}
+                        items={this.state.projects}
+                        noResults={<MenuItem text={"No Results."} disabled={true}/>}
+                        onItemSelect={this.handleProjectSelect.bind(this)}
+                        popoverProps={{ minimal: true }}
+                        resetOnSelect={true}
+                        tagRenderer={this.renderTag}
+                        tagInputProps={{ tagProps: {intent: "none", minimal: false}, onRemove: this.handleTagRemove.bind(this), rightElement: clearTags }}
+                        selectedItems={this.state.selectedProjects}
+                        placeholder="Select Projects..."
+                    />
                     <br/><br/>
                     <H6>Filters:</H6>
                     <Switch name="cb-completed" inline={true} label="Completed" checked={this.state.filters.completed} onChange={this.handleFilterChange.bind(this)}/>
@@ -157,6 +182,33 @@ class Home extends Component {
             </div>
         );
     }
+
+    renderProject = (project, { handleClick, modifiers, query }) => {
+        if (!modifiers.matchesPredicate) {
+            return null;
+        }
+
+        return (
+            <MenuItem
+                active={modifiers.active}
+                icon={this.isProjectSelected(project) ? "tick" : "blank"}
+                key={project.id}
+                label={project.author}
+                onClick={handleClick}
+                text={highlightText(project.title, query)}
+                shouldDismissPopover={false}
+            />
+        );
+    };
+
+    getSelectedProjectIndex = (project) => {return this.state.selectedProjects.indexOf(project)};
+
+    isProjectSelected = (project) => {return this.getSelectedProjectIndex(project) !== -1};
+
+    selectProject = (project) => {this.setState({selectedProjects: [...this.state.selectedProjects, project]})};
+
+    deselectProject = (index) => {this.setState({selectedProjects: this.state.selectedProjects.filter((_p, i) => i !== index)})};
+
 }
 
 export default Home;

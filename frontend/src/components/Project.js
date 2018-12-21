@@ -1,21 +1,10 @@
 import React from 'react';
-import { MenuItem } from '@blueprintjs/core';
-
-export const renderProject = (project, { handleClick, modifiers, query }) => {
-    if (!modifiers.matchesPredicate) {
-        return null;
-    }
-
-    return (
-        <MenuItem active={modifiers.active} disabled={modifiers.disabled} label={project.author} onClick={handleClick} text={highlightText(project.title, query)} key={project.id}/>
-    );
-};
 
 export const filterProject = (query, project) => {
     return `${project.title.toLowerCase()} ${project.author}`.indexOf(query.toLowerCase()) >= 0;
 };
 
-function highlightText(text, query) {
+export const highlightText = (text, query) => {
     let lastIndex = 0;
     const words = query.split(/\s+/).filter(word => word.length > 0).map(escapeRegExpChars);
     if (words.length === 0) return [text];
@@ -39,7 +28,7 @@ function highlightText(text, query) {
         tokens.push(rest);
     }
     return tokens;
-}
+};
 
 function escapeRegExpChars(text) {
     return text.replace(/([.*+?^=!:${}()|[\]/\\])/g, "\\$1");
