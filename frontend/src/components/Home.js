@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import {Card, Elevation, H3, H4, H6, Button, MenuItem, Switch, Navbar, Alignment} from "@blueprintjs/core";
 import {MultiSelect} from "@blueprintjs/select";
-import PropTypes from 'prop-types';
 import { filterProject, highlightText } from './Project';
 import ProjectItem from "./ProjectItem";
 
 class Home extends Component {
     state = {
-        refreshing: false,
-        projects: [],
         selectedProjects: [],
         displayedProjects: [],
         filters: {
@@ -19,13 +16,13 @@ class Home extends Component {
     };
 
     componentDidMount() {
-        this.refreshProjects();
+        this.props.refresh();
         document.evaluate("//input[@class='bp3-input-ghost']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.style.width = "200px";
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevState.selectedProjects.length !== this.state.selectedProjects.length || prevState.projects.length !== this.state.projects.length || prevState.filters !== this.state.filters) {
-            if (this.state.selectedProjects.length === 0) this.setState({displayedProjects: this.filterProjects(this.state.projects.slice())});
+        if (prevState.selectedProjects !== this.state.selectedProjects || prevProps.projects !== this.props.projects || prevState.filters !== this.state.filters) {
+            if (this.state.selectedProjects.length === 0) this.setState({displayedProjects: this.filterProjects(this.props.projects.slice())});
             else this.setState({displayedProjects: this.filterProjects(this.state.selectedProjects.slice())});
         }
     }
@@ -36,72 +33,6 @@ class Home extends Component {
             if (this.state.filters.working && p.status === "working") return true;
             return this.state.filters.completed && p.status === "completed";
         });
-    }
-
-    refreshProjects() {
-        this.setState({refreshing: true});
-
-        // TODO: replace with API call
-        setTimeout(() => {
-            this.setState({
-                refreshing: false,
-                projects: [
-                    {
-                        id: 1,
-                        status_date: new Date().toDateString(),
-                        status: "completed",
-                        title: "Completed Project",
-                        description: "This is a test project. It is solely for testing purposes. A user should never see it.",
-                        author: "Test User",
-                        added_date: new Date().toDateString(),
-                        edited_date: false
-                    },
-                    {
-                        id: 2,
-                        status_date: new Date().toDateString(),
-                        status: "working",
-                        title: "In Progress Project",
-                        description: "This is a test project. It is solely for testing purposes. A user should never see it.",
-                        author: "Test User",
-                        added_date: new Date().toDateString(),
-                        edited_date: false
-                    },
-                    {
-                        id: 3,
-                        status_date: new Date().toDateString(),
-                        status: "queued",
-                        title: "Queued Project",
-                        description: "This is a test project. It is solely for testing purposes. A user should never see it.",
-                        author: "Test User",
-                        added_date: new Date().toDateString(),
-                        edited_date: false
-                    }
-                ]
-            });
-
-        }, 1000);
-    }
-
-    deleteProject(id) {
-        let projects = [];
-        for (let p of this.state.projects) {
-            if (p.id !== id) {
-                projects.push(p);
-            }
-        }
-        this.setState({projects: projects});
-    }
-
-    editProject(id, data) {
-        let projects = this.state.projects.slice();
-        for (let p in projects) {
-            if (projects[p].id === id) {
-                projects[p].title = data.title;
-                projects[p].description = data.description;
-                projects[p].edited_date = new Date().toDateString();
-            }
-        }
-        this.setState({projects: projects});
     }
 
     handleFilterChange(filter) {
@@ -161,7 +92,7 @@ class Home extends Component {
                         for a project, please login. Below, you can search for and filter
                         any projects.</p>
                     <Button text="Refresh Projects" intent="primary" icon="refresh" className="bp3-small"
-                            loading={this.state.refreshing} onClick={this.refreshProjects.bind(this)} />
+                            loading={this.props.refreshing} onClick={this.props.refresh} />
                 </Card>
 
                 <Card elevation={Elevation.TWO} style={style.heading_card}>
@@ -170,7 +101,7 @@ class Home extends Component {
                         initialContent={undefined}
                         itemPredicate={filterProject}
                         itemRenderer={this.renderProject}
-                        items={this.state.projects}
+                        items={this.props.projects}
                         noResults={<MenuItem text={"No Results."} disabled={true}/>}
                         onItemSelect={this.handleProjectSelect.bind(this)}
                         popoverProps={{ minimal: true }}
@@ -188,8 +119,8 @@ class Home extends Component {
                 </Card>
 
                 {this.state.displayedProjects.length > 0 && this.state.displayedProjects.map((project, key) =>
-                    <ProjectItem authenticated={isAuthenticated()} data={project} key={key} onDelete={this.deleteProject.bind(this)}
-                                 onEdit={this.editProject.bind(this)}/>)}
+                    <ProjectItem authenticated={isAuthenticated()} data={project} key={key} onDelete={this.props.delete}
+                                 onEdit={this.props.update}/>)}
 
                 {this.state.displayedProjects.length === 0 && (
                     <Card elevation={Elevation.ONE} style={style.dne_card}>
@@ -200,7 +131,7 @@ class Home extends Component {
 
                             <Navbar.Group align={Alignment.RIGHT}>
                                 <Button text="Refresh Projects" intent="primary" icon="refresh" className="bp3-small"
-                                        loading={this.state.refreshing} onClick={this.refreshProjects.bind(this)} />
+                                        loading={this.props.refreshing} onClick={this.props.refresh} />
                             </Navbar.Group>
                         </Navbar>
                     </Card>
@@ -236,9 +167,5 @@ class Home extends Component {
     deselectProject = (index) => {this.setState({selectedProjects: this.state.selectedProjects.filter((_p, i) => i !== index)})};
 
 }
-
-Home.propTypes = {
-    auth: PropTypes.object.isRequired
-};
 
 export default Home;

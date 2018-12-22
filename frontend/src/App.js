@@ -1,7 +1,6 @@
 import React from 'react';
 import './App.css';
 import {Button, Navbar, Alignment, Toaster} from "@blueprintjs/core";
-import PropTypes from 'prop-types';
 import history from './history';
 import AddProject from './components/AddProject';
 
@@ -46,11 +45,6 @@ class App extends React.Component {
         this.setState({add: false});
     }
 
-    createProject(data) {
-        // TODO: send request to create project
-        window.location.reload();
-    }
-
     render() {
         const { isAuthenticated } = this.props.auth;
 
@@ -71,15 +65,10 @@ class App extends React.Component {
                         { isAuthenticated() && <Button className="bp3-minimal" icon="user" text="Logout" intent="danger" onClick={this.logout.bind(this)}/> }
                     </Navbar.Group>
                 </Navbar>
-                <AddProject open={this.state.add} close={this.closeAdd.bind(this)} create={this.createProject.bind(this)}/>
+                <AddProject open={this.state.add} close={this.closeAdd.bind(this)} create={this.props.createProject}/>
             </div>
         );
     }
 }
-
-App.propTypes = {
-    auth: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired
-};
 
 export default App;

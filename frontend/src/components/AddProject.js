@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import {Button, Dialog, Classes, FormGroup, InputGroup, TextArea} from "@blueprintjs/core";
 
 class AddProject extends Component {
@@ -29,13 +28,8 @@ class AddProject extends Component {
     }
 
     submit() {
-        this.props.create({
-            ...this.state,
-            status: "queued",
-            added_date: new Date().toDateString(),
-            status_date: new Date().toDateString(),
-            edited_date: false
-        });
+        this.props.create(this.state.title, this.state.description, this.state.profile);
+        this.props.close();
     }
 
     render() {

@@ -3,7 +3,6 @@ import {Card, Elevation, Navbar, Alignment,
     Tag, Tooltip, Position, Button, Collapse,
     Alert, Dialog, Classes, FormGroup,
     InputGroup, TextArea} from "@blueprintjs/core";
-import PropTypes from 'prop-types';
 
 class ProjectItem extends Component {
     constructor(props) {
@@ -37,7 +36,7 @@ class ProjectItem extends Component {
 
     handleEdit() {
         this.toggleEdit();
-        this.props.onEdit(this.props.data.id, this.state.editData);
+        this.props.onEdit(this.props.data.id, this.state.editData.title, this.state.editData.description);
         this.setState({editData: {title: "", description: ""}});
     }
 
@@ -125,19 +124,5 @@ class ProjectItem extends Component {
         )
     }
 }
-
-ProjectItem.propTypes = {
-    onDelete: PropTypes.func.isRequired,
-    onEdit: PropTypes.func.isRequired,
-    authenticated: PropTypes.bool.isRequired,
-    data: PropTypes.objectOf(PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        title: PropTypes.string.isRequired,
-        description: PropTypes.string.isRequired,
-        author: PropTypes.string.isRequired,
-        added_date: PropTypes.string.isRequired,
-        edited_date: PropTypes.string.isRequired
-    }).isRequired).isRequired
-};
 
 export default ProjectItem;
