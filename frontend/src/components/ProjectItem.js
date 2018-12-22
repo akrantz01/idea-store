@@ -21,7 +21,7 @@ class ProjectItem extends Component {
     }
 
     toggleDescription(event) {
-        if (event.target.type !== "button") {
+        if (event.target.tagName === "DIV" || event.target.tagName === "B") {
             this.setState({description: !this.state.description});
         }
     }
