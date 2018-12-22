@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {Button, Dialog, Classes, FormGroup, InputGroup, TextArea} from "@blueprintjs/core";
 
 class AddProject extends Component {

@@ -1,7 +1,7 @@
 import React from 'react';
-
 import './App.css';
 import {Button, Navbar, Alignment, Toaster} from "@blueprintjs/core";
+import PropTypes from 'prop-types';
 import history from './history';
 import AddProject from './components/AddProject';
 
@@ -76,5 +76,10 @@ class App extends React.Component {
         );
     }
 }
+
+App.propTypes = {
+    auth: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired
+};
 
 export default App;

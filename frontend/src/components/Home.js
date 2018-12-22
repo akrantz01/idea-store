@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {Card, Elevation, H3, H4, H6, Button, MenuItem, Switch, Navbar, Alignment} from "@blueprintjs/core";
 import {MultiSelect} from "@blueprintjs/select";
+import PropTypes from 'prop-types';
 import { filterProject, highlightText } from './Project';
 import ProjectItem from "./ProjectItem";
 
@@ -235,5 +236,9 @@ class Home extends Component {
     deselectProject = (index) => {this.setState({selectedProjects: this.state.selectedProjects.filter((_p, i) => i !== index)})};
 
 }
+
+Home.propTypes = {
+    auth: PropTypes.object.isRequired
+};
 
 export default Home;
