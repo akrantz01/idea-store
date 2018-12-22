@@ -1,19 +1,23 @@
 import React, { Component } from 'react';
-import {Card, Elevation, H3, H4, H6, Button, MenuItem, Switch, Navbar, Alignment} from "@blueprintjs/core";
+import {Card, Elevation, H3, H4, H6, Button, MenuItem, Switch, Navbar, Alignment, Tab, Tabs} from "@blueprintjs/core";
 import {MultiSelect} from "@blueprintjs/select";
 import { filterProject, highlightText } from './Project';
 import ProjectItem from "./ProjectItem";
 
 class Home extends Component {
-    state = {
-        selectedProjects: [],
-        displayedProjects: [],
-        filters: {
-            completed: false,
-            working: true,
-            queued: true
-        }
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            selectedProjects: [],
+            displayedProjects: [],
+            filters: {
+                completed: false,
+                working: true,
+                queued: true
+            },
+            currentTab: "default"
+        };
+    }
 
     componentDidMount() {
         this.props.refresh();
@@ -69,6 +73,8 @@ class Home extends Component {
         this.setState({selectedProjects: []})
     }
 
+    handleTabChange = (currentTab) => {this.setState({currentTab})};
+
     render() {
         const { isAuthenticated, isAdmin } = this.props.auth;
         const style = {
@@ -98,7 +104,19 @@ class Home extends Component {
                 )}
 
                 <Card elevation={(isAdmin()) ? Elevation.THREE : Elevation.TWO} style={style.heading_card}>
-                    <H4>Search</H4>
+
+                    { isAdmin() && (
+                        <>
+                            <Tabs id="admin-view" onChange={this.handleTabChange} selectedTabId={this.state.currentTab}>
+                                <Tab id="default" title="All Projects"/>
+                                <Tab id="private" title="Private Projects"/>
+                                <Tab id="priority" title="Without Priority"/>
+                            </Tabs>
+                            <br/>
+                        </>
+                    )}
+
+                    { (isAdmin()) ? <H6>Search</H6> : <H4>Search</H4>}
                     <MultiSelect
                         initialContent={undefined}
                         itemPredicate={filterProject}
@@ -127,23 +145,35 @@ class Home extends Component {
                     )}
                 </Card>
 
-                {this.state.displayedProjects.length > 0 && this.state.displayedProjects.map((project, key) =>
-                    <ProjectItem authenticated={isAuthenticated()} admin={isAdmin} data={project} key={key} onDelete={this.props.delete}
-                                 onEdit={this.props.update}/>)}
+                { (!isAdmin() || this.state.currentTab === "default") && (
+                    <>
+                        {this.state.displayedProjects.length > 0 && this.state.displayedProjects.map((project, key) =>
+                                <ProjectItem authenticated={isAuthenticated()} admin={isAdmin} data={project} key={key} onDelete={this.props.delete}
+                                             onEdit={this.props.update}/>)}
 
-                {this.state.displayedProjects.length === 0 && (
-                    <Card elevation={Elevation.ONE} style={style.dne_card}>
-                        <Navbar style={{ boxShadow: "none" }}>
+                        {this.state.displayedProjects.length === 0 && (
+                            <Card elevation={Elevation.ONE} style={style.dne_card}>
+                            <Navbar style={{ boxShadow: "none" }}>
                             <Navbar.Group align={Alignment.LEFT}>
-                                <Navbar.Heading style={{ fontSize: "18px" }}><b>No Projects in Database</b></Navbar.Heading>
+                            <Navbar.Heading style={{ fontSize: "18px" }}><b>No Projects in Database</b></Navbar.Heading>
                             </Navbar.Group>
 
                             <Navbar.Group align={Alignment.RIGHT}>
-                                <Button text="Refresh Projects" intent="primary" icon="refresh" className="bp3-small"
-                                        loading={this.props.refreshing} onClick={this.props.refresh} />
+                            <Button text="Refresh Projects" intent="primary" icon="refresh" className="bp3-small"
+                            loading={this.props.refreshing} onClick={this.props.refresh} />
                             </Navbar.Group>
-                        </Navbar>
-                    </Card>
+                            </Navbar>
+                            </Card>
+                        )}
+                    </>
+                )}
+
+                { isAdmin() && this.state.currentTab === "private" && (
+                    <p>Private Projects</p>
+                )}
+
+                { isAdmin() && this.state.currentTab === "priority" && (
+                    <p>Projects Without Priority</p>
                 )}
             </div>
         );
