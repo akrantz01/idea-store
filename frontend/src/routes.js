@@ -61,7 +61,7 @@ class Routes extends Component {
                         title: "Completed Project",
                         description: "This is a test project. It is solely for testing purposes. A user should never see it.",
                         author: "Test User",
-                        author_id: "",
+                        author_id: "an id",
                         added_date: new Date().toDateString(),
                         edited_date: false
                     },
@@ -72,7 +72,7 @@ class Routes extends Component {
                         title: "In Progress Project",
                         description: "This is a test project. It is solely for testing purposes. A user should never see it.",
                         author: "Test User",
-                        author_id: "",
+                        author_id: "an id",
                         added_date: new Date().toDateString(),
                         edited_date: false
                     },
@@ -83,7 +83,7 @@ class Routes extends Component {
                         title: "Queued Project",
                         description: "This is a test project. It is solely for testing purposes. A user should never see it.",
                         author: "Test User",
-                        author_id: "",
+                        author_id: "an id",
                         added_date: new Date().toDateString(),
                         edited_date: false
                     }

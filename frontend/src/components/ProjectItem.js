@@ -82,7 +82,7 @@ class ProjectItem extends Component {
 
                         </Navbar.Group>
 
-                        { this.props.authenticated && (JSON.parse(localStorage.getItem("profile")).sub === this.props.data.author_id || this.props.admin) && (
+                        { this.props.authenticated && (JSON.parse(localStorage.getItem("profile")).sub === this.props.data.author_id || this.props.admin()) && (
                             <Navbar.Group align={Alignment.RIGHT}>
                                 <Button icon="edit" minimal={true} onClick={this.toggleEdit.bind(this)}/>
                                 <Navbar.Divider/>
@@ -95,10 +95,10 @@ class ProjectItem extends Component {
 
                         { this.props.data.edited_date && (
                             <Tooltip content={`Edited on ${this.props.data.edited_date}`} position={Position.BOTTOM}>
-                                <div className="bp3-text-muted bp3-text-small"><b>Requested by {this.props.data.author}</b> on {this.props.data.added_date}</div>
+                                <div className="bp3-text-muted bp3-text-small"><b>{(this.props.admin(this.props.data.author_id)) ? "Added" : "Requested"} by {this.props.data.author}</b> on {this.props.data.added_date}</div>
                             </Tooltip>
                         )}
-                        { !this.props.data.edited_date && <div className="bp3-text-muted bp3-text-small"><b>Requested by {this.props.data.author}</b> on {this.props.data.added_date}</div>}
+                        { !this.props.data.edited_date && <div className="bp3-text-muted bp3-text-small"><b>{(this.props.admin(this.props.data.author_id)) ? "Added" : "Requested"} by {this.props.data.author}</b> on {this.props.data.added_date}</div>}
                     </Collapse>
                 </Card>
 
@@ -115,7 +115,7 @@ class ProjectItem extends Component {
                         <FormGroup label="Project Description" labelFor="description">
                             <TextArea className="bp3-fill" value={this.state.editData.description} placeholder={this.props.data.description} onChange={this.handleDescriptionEdit.bind(this)}/>
                         </FormGroup>
-                        { this.props.authenticated && this.props.admin && (
+                        { this.props.authenticated && this.props.admin() && (
                             <FormGroup label="Status:" labelFor="status" inline={true}>
                                 <HTMLSelect id="status" value={this.state.editData.status} onChange={this.handleStatusEdit.bind(this)}>
                                     <option value="completed">Completed</option>

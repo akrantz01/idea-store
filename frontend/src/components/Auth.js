@@ -47,7 +47,8 @@ export default class Auth {
         return new Date().getTime() < JSON.parse(localStorage.getItem("expires_at"));
     }
 
-    isAdmin() {
+    isAdmin(id="") {
+        if (id !== "") return this.state.admin === id;
         return this.isAuthenticated() && this.state.admin === JSON.parse(localStorage.getItem("profile")).sub;
     }
 
