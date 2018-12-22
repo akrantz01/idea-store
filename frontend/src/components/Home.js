@@ -170,11 +170,14 @@ class Home extends Component {
                     <Tooltip content="Projects that I don't currently plan on working on" position={Position.BOTTOM}>
                         <Switch name="cb-ignored" inline={true} label="Ignored" checked={this.state.filters.ignored} onChange={this.handleFilterChange.bind(this)}/>
                     </Tooltip>
+                    <br/>
 
-                    <FormGroup label="Minimum Priority:" labelFor="priority" inline={true}>
-                        <NumericInput id="priority" name="ns-priority" minorStepSize={null} majorStepSize={null} min={0}
-                                      max={3} value={this.state.filters.priority} onValueChange={this.handlePriorityChange.bind(this)}/>
-                    </FormGroup>
+                    <Tooltip content={"What I am most to least likely to work on with 0 being the lowest and 3 being the highest"} position={Position.TOP}>
+                        <FormGroup label="Minimum Priority:" labelFor="priority" inline={true}>
+                            <NumericInput id="priority" name="ns-priority" minorStepSize={null} majorStepSize={null} min={0}
+                                          max={3} value={this.state.filters.priority} onValueChange={this.handlePriorityChange.bind(this)}/>
+                        </FormGroup>
+                    </Tooltip>
 
                     <FormGroup label="Date Created:" labelFor="daterange" inline={true}>
                         <DateRangeInput formatDate={date => date.toLocaleDateString()} parseDate={str => new Date(str)}
