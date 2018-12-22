@@ -14,13 +14,14 @@ class Routes extends Component {
         refreshing: false
     };
 
-    createProject(title, description, author) {
+    createProject(title, description, author, author_id) {
         // TODO: add API request
         this.setState({projects: [...this.state.projects, {
             id: Math.floor((Math.random()*500)+500),
             title,
             description,
             author,
+            author_id,
             status: "queued",
             status_date: new Date().toDateString(),
             added_date: new Date().toDateString(),
@@ -59,6 +60,7 @@ class Routes extends Component {
                         title: "Completed Project",
                         description: "This is a test project. It is solely for testing purposes. A user should never see it.",
                         author: "Test User",
+                        author_id: "",
                         added_date: new Date().toDateString(),
                         edited_date: false
                     },
@@ -69,6 +71,7 @@ class Routes extends Component {
                         title: "In Progress Project",
                         description: "This is a test project. It is solely for testing purposes. A user should never see it.",
                         author: "Test User",
+                        author_id: "",
                         added_date: new Date().toDateString(),
                         edited_date: false
                     },
@@ -79,6 +82,7 @@ class Routes extends Component {
                         title: "Queued Project",
                         description: "This is a test project. It is solely for testing purposes. A user should never see it.",
                         author: "Test User",
+                        author_id: "",
                         added_date: new Date().toDateString(),
                         edited_date: false
                     }

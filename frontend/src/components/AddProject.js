@@ -35,7 +35,8 @@ class AddProject extends Component {
     }
 
     submit() {
-        this.props.create(this.state.title, this.state.description, JSON.parse(localStorage.getItem("profile")).name);
+        let profile = JSON.parse(localStorage.getItem("profile"));
+        this.props.create(this.state.title, this.state.description, profile.name, profile.sub);
         this.props.close();
     }
 

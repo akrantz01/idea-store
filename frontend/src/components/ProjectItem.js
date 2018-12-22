@@ -79,7 +79,7 @@ class ProjectItem extends Component {
 
                         </Navbar.Group>
 
-                        { this.props.authenticated && JSON.parse(localStorage.getItem("profile")).name === this.props.data.author && (
+                        { this.props.authenticated && JSON.parse(localStorage.getItem("profile")).sub === this.props.data.author_id && (
                             <Navbar.Group align={Alignment.RIGHT}>
                                 <Button icon="edit" minimal={true} onClick={this.toggleEdit.bind(this)}/>
                                 <Navbar.Divider/>
