@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Card, Elevation, Navbar, Alignment,
     Tag, Tooltip, Position, Button, Collapse,
     Alert, Dialog, Classes, FormGroup,
-    InputGroup, TextArea} from "@blueprintjs/core";
+    InputGroup, TextArea, HTMLSelect} from "@blueprintjs/core";
 
 class ProjectItem extends Component {
     constructor(props) {
@@ -14,7 +14,8 @@ class ProjectItem extends Component {
             edit: false,
             editData: {
                 title: "",
-                description: ""
+                description: "",
+                status: this.props.data.status
             }
         };
     }
@@ -36,13 +37,15 @@ class ProjectItem extends Component {
 
     handleEdit() {
         this.toggleEdit();
-        this.props.onEdit(this.props.data.id, this.state.editData.title, this.state.editData.description);
+        this.props.onEdit(this.props.data.id, this.state.editData.title, this.state.editData.description, this.state.editData.status);
         this.setState({editData: {title: "", description: ""}});
     }
 
-    handleTitleEdit = (event) => this.setState({editData: {title: event.target.value, description: this.state.editData.description}});
+    handleTitleEdit = (event) => this.setState({editData: {...this.state.editData, title: event.target.value}});
 
-    handleDescriptionEdit = (event) => this.setState({editData: {title: this.state.editData.title, description: event.target.value}});
+    handleDescriptionEdit = (event) => this.setState({editData: {...this.state.editData, description: event.target.value}});
+
+    handleStatusEdit = (event) => this.setState({editData: {...this.state.editData, status: event.target.value}});
 
     render() {
         const style = {
@@ -79,7 +82,7 @@ class ProjectItem extends Component {
 
                         </Navbar.Group>
 
-                        { this.props.authenticated && JSON.parse(localStorage.getItem("profile")).sub === this.props.data.author_id && (
+                        { this.props.authenticated && (JSON.parse(localStorage.getItem("profile")).sub === this.props.data.author_id || this.props.admin) && (
                             <Navbar.Group align={Alignment.RIGHT}>
                                 <Button icon="edit" minimal={true} onClick={this.toggleEdit.bind(this)}/>
                                 <Navbar.Divider/>
@@ -112,6 +115,15 @@ class ProjectItem extends Component {
                         <FormGroup label="Project Description" labelFor="description">
                             <TextArea className="bp3-fill" value={this.state.editData.description} placeholder={this.props.data.description} onChange={this.handleDescriptionEdit.bind(this)}/>
                         </FormGroup>
+                        { this.props.authenticated && this.props.admin && (
+                            <FormGroup label="Status:" labelFor="status" inline={true}>
+                                <HTMLSelect id="status" value={this.state.editData.status} onChange={this.handleStatusEdit.bind(this)}>
+                                    <option value="completed">Completed</option>
+                                    <option value="working">In Progress</option>
+                                    <option value="queued">Queued</option>
+                                </HTMLSelect>
+                            </FormGroup>
+                        )}
                     </div>
                     <div className={Classes.DIALOG_FOOTER}>
                         <div className={Classes.DIALOG_FOOTER_ACTIONS}>

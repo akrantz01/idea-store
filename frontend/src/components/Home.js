@@ -70,7 +70,7 @@ class Home extends Component {
     }
 
     render() {
-        const { isAuthenticated } = this.props.auth;
+        const { isAuthenticated, isAdmin } = this.props.auth;
         const style = {
             heading_card: {
                 margin: "10px"
@@ -119,7 +119,7 @@ class Home extends Component {
                 </Card>
 
                 {this.state.displayedProjects.length > 0 && this.state.displayedProjects.map((project, key) =>
-                    <ProjectItem authenticated={isAuthenticated()} data={project} key={key} onDelete={this.props.delete}
+                    <ProjectItem authenticated={isAuthenticated()} admin={isAdmin()} data={project} key={key} onDelete={this.props.delete}
                                  onEdit={this.props.update}/>)}
 
                 {this.state.displayedProjects.length === 0 && (

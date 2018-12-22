@@ -23,6 +23,11 @@ export default class Auth {
         this.login = this.login.bind(this);
         this.logout = this.logout.bind(this);
         this.isAuthenticated = this.isAuthenticated.bind(this);
+        this.isAdmin = this.isAdmin.bind(this);
+
+        this.state = {
+            admin: "google-oauth2|102493818408140086770" // TODO: change to use Auth0 app_metadata instead
+        }
     }
 
     login() {
@@ -40,6 +45,10 @@ export default class Auth {
 
     isAuthenticated() {
         return new Date().getTime() < JSON.parse(localStorage.getItem("expires_at"));
+    }
+
+    isAdmin() {
+        return this.isAuthenticated() && this.state.admin === JSON.parse(localStorage.getItem("profile")).sub;
     }
 
     handleAuthentication() {

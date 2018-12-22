@@ -29,12 +29,13 @@ class Routes extends Component {
         }]})
     }
 
-    updateProject(index, title="", description="") {
+    updateProject(index, title="", description="", status="") {
         // TODO: add API request
         this.setState({projects: this.state.projects.map((project) => {
             if (project.id === index) {
                 project.title = (title !== "") ? title : project.title;
                 project.description = (description !== "") ? description : project.description;
+                project.status = (status !== "") ? status : project.status;
             }
             return project;
         })});
