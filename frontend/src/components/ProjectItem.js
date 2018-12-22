@@ -94,6 +94,7 @@ class ProjectItem extends Component {
                             )}
 
                             { this.props.data.priority !== 0 && <Tag className="priority-tag">Priority: {this.props.data.priority}</Tag>}
+                            { !this.props.data.public && <Tag className="private-tag" intent="danger">Private</Tag> }
 
                         </Navbar.Group>
 

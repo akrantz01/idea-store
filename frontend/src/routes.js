@@ -63,6 +63,7 @@ class Routes extends Component {
                         author_id: "an id",
                         status: "completed",
                         priority: 3,
+                        public: true,
                         status_date: new Date().toLocaleDateString(),
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
@@ -75,6 +76,7 @@ class Routes extends Component {
                         author_id: "an id",
                         status: "working",
                         priority: 2,
+                        public: true,
                         status_date: new Date().toLocaleDateString(),
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
@@ -87,6 +89,7 @@ class Routes extends Component {
                         author_id: "an id",
                         status: "queued",
                         priority: 1,
+                        public: true,
                         status_date: new Date().toLocaleDateString(),
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
@@ -99,6 +102,20 @@ class Routes extends Component {
                         author_id: "an id",
                         status: "ignored",
                         priority: 0,
+                        public: true,
+                        status_date: new Date().toLocaleDateString(),
+                        added_date: new Date().toLocaleDateString(),
+                        edited_date: false
+                    },
+                    {
+                        id: 5,
+                        title: "Private Project",
+                        description: "This is a test project. It is solely for testing purposes. A user should never see it.",
+                        author: "Test User",
+                        author_id: "an id",
+                        status: "working",
+                        priority: 2,
+                        public: false,
                         status_date: new Date().toLocaleDateString(),
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false

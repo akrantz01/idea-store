@@ -19,6 +19,7 @@ class Home extends Component {
                 queued: true,
                 ignored: false,
                 priority: 0,
+                private: false,
                 range: [null, null]
             },
             currentTab: "default"
@@ -45,6 +46,7 @@ class Home extends Component {
             }
 
             if (this.state.filters.priority > p.priority) return false;
+            if (!this.state.filters.private && !p.public) return false;
 
             if (this.state.filters.ignored && p.status === "ignored") return true;
             if (this.state.filters.queued && p.status === "queued") return true;
@@ -69,6 +71,10 @@ class Home extends Component {
 
             case "cb-ignored":
                 this.setState({filters: {...this.state.filters, ignored: !this.state.filters.ignored}});
+                break;
+
+            case "cb-private":
+                this.setState({filters: {...this.state.filters, private: !this.state.filters.private}});
                 break;
 
             default:
@@ -134,8 +140,8 @@ class Home extends Component {
                         <>
                             <Tabs id="admin-view" onChange={this.handleTabChange} selectedTabId={this.state.currentTab}>
                                 <Tab id="default" title="All Projects"/>
-                                <Tab id="private" title="Private Projects"/>
-                                <Tab id="priority" title="Without Priority"/>
+                                <Tab id="new" title="Newly Created"/>
+                                <Tab id="deleted" title="Deleted Projects"/>
                             </Tabs>
                             <br/>
                         </>
@@ -170,6 +176,11 @@ class Home extends Component {
                     <Tooltip content="Projects that I don't currently plan on working on" position={Position.BOTTOM}>
                         <Switch name="cb-ignored" inline={true} label="Ignored" checked={this.state.filters.ignored} onChange={this.handleFilterChange.bind(this)}/>
                     </Tooltip>
+                    { isAdmin() && (
+                        <Tooltip content={"Privately request projects"} intent="danger" position={Position.BOTTOM}>
+                            <Switch name="cb-private" inline={true} label="Private" checked={this.state.filters.private} onChange={this.handleFilterChange.bind(this)}/>
+                        </Tooltip>
+                    )}
                     <br/>
 
                     <Tooltip content={"What I am most to least likely to work on with 0 being the lowest and 3 being the highest"} position={Position.TOP}>

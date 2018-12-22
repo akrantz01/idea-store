@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Button, Dialog, Classes, FormGroup, InputGroup, TextArea} from "@blueprintjs/core";
+import {Button, Dialog, Classes, FormGroup, InputGroup, TextArea, Switch} from "@blueprintjs/core";
 
 class AddProject extends Component {
     constructor(props) {
@@ -8,7 +8,8 @@ class AddProject extends Component {
         this.state = {
             title: "",
             description: "",
-            profile: ""
+            profile: "",
+            public: true
         }
     }
 
@@ -27,6 +28,10 @@ class AddProject extends Component {
 
             case "description":
                 this.setState({description: event.target.value});
+                break;
+
+            case "public":
+                this.setState({public: !this.state.public});
                 break;
 
             default:
@@ -49,6 +54,9 @@ class AddProject extends Component {
                     </FormGroup>
                     <FormGroup label="Project Description" labelFor="description">
                         <TextArea id="description" className="bp3-fill" value={this.state.description} placeholder="Description..." onChange={this.handleUpdate.bind(this)}/>
+                    </FormGroup>
+                    <FormGroup label="Public" labelFor="public" inline={true}>
+                        <Switch id="public" checked={this.state.public} onChange={this.handleUpdate.bind(this)}/>
                     </FormGroup>
                     <FormGroup label="Author" labelFor="author">
                         <InputGroup id="author" value={this.state.profile} disabled={true}/>
