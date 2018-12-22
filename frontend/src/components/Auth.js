@@ -12,7 +12,7 @@ export default class Auth {
             redirectUrl: redirectURL,
             responseType: "token id_token",
             params: {
-                scope: "openid"
+                scope: "openid profile"
             }
         }
     });
@@ -52,11 +52,18 @@ export default class Auth {
 
     setSession(authResult) {
         if (authResult && authResult.accessToken && authResult.idToken) {
-            localStorage.setItem("access_token", authResult.accessToken);
-            localStorage.setItem("id_token", authResult.idToken);
-            localStorage.setItem("expires_at", JSON.stringify((authResult.expiresIn * 1000) + new Date().getTime()));
+            this.lock.getUserInfo(authResult.accessToken, function(err, profile) {
+                if (err) {
+                    return;
+                }
 
-            history.replace("/home");
+                localStorage.setItem("access_token", authResult.accessToken);
+                localStorage.setItem("id_token", authResult.idToken);
+                localStorage.setItem("expires_at", JSON.stringify((authResult.expiresIn * 1000) + new Date().getTime()));
+                localStorage.setItem("profile", JSON.stringify(profile));
+
+                history.replace("/home");
+            });
         }
     }
 }
