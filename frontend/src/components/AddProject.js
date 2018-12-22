@@ -8,7 +8,14 @@ class AddProject extends Component {
         this.state = {
             title: "",
             description: "",
-            profile: JSON.parse(localStorage.getItem("profile")).name
+            profile: ""
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.open !== this.props.open) {
+            if (this.props.isAuthenticated()) this.setState({profile: JSON.parse(localStorage.getItem("profile")).name});
+            else this.setState({profile: ""});
         }
     }
 
@@ -28,7 +35,7 @@ class AddProject extends Component {
     }
 
     submit() {
-        this.props.create(this.state.title, this.state.description, this.state.profile);
+        this.props.create(this.state.title, this.state.description, JSON.parse(localStorage.getItem("profile")).name);
         this.props.close();
     }
 

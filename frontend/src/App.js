@@ -65,7 +65,7 @@ class App extends React.Component {
                         { isAuthenticated() && <Button className="bp3-minimal" icon="user" text="Logout" intent="danger" onClick={this.logout.bind(this)}/> }
                     </Navbar.Group>
                 </Navbar>
-                <AddProject open={this.state.add} close={this.closeAdd.bind(this)} create={this.props.createProject}/>
+                <AddProject open={this.state.add} close={this.closeAdd.bind(this)} create={this.props.createProject} isAuthenticated={isAuthenticated}/>
             </div>
         );
     }
