@@ -83,19 +83,21 @@ class Home extends Component {
 
         return (
             <div className="container">
-                <Card elevation={Elevation.THREE} style={style.heading_card}>
-                    <H3>Projects</H3>
-                    <p>Below is a list of projects that I am either currently working on
-                        or will be working on in the near future. It also includes already
-                        completed projects with links to the source code and where they
-                        are running (if they are). If you would like to submit an idea
-                        for a project, please login. Below, you can search for and filter
-                        any projects.</p>
-                    <Button text="Refresh Projects" intent="primary" icon="refresh" className="bp3-small"
-                            loading={this.props.refreshing} onClick={this.props.refresh} />
-                </Card>
+                { !isAdmin() && (
+                    <Card elevation={Elevation.THREE} style={style.heading_card}>
+                        <H3>Projects</H3>
+                        <p>Below is a list of projects that I am either currently working on
+                            or will be working on in the near future. It also includes already
+                            completed projects with links to the source code and where they
+                            are running (if they are). If you would like to submit an idea
+                            for a project, please login. Below, you can search for and filter
+                            any projects.</p>
+                        <Button text="Refresh Projects" intent="primary" icon="refresh" className="bp3-small"
+                                loading={this.props.refreshing} onClick={this.props.refresh} />
+                    </Card>
+                )}
 
-                <Card elevation={Elevation.TWO} style={style.heading_card}>
+                <Card elevation={(isAdmin()) ? Elevation.THREE : Elevation.TWO} style={style.heading_card}>
                     <H4>Search</H4>
                     <MultiSelect
                         initialContent={undefined}
@@ -116,6 +118,13 @@ class Home extends Component {
                     <Switch name="cb-completed" inline={true} label="Completed" checked={this.state.filters.completed} onChange={this.handleFilterChange.bind(this)}/>
                     <Switch name="cb-working" inline={true} label="In Progress" checked={this.state.filters.working} onChange={this.handleFilterChange.bind(this)}/>
                     <Switch name="cb-queued" inline={true} label="Queued" checked={this.state.filters.queued} onChange={this.handleFilterChange.bind(this)}/>
+                    { isAdmin() && (
+                        <>
+                            <br/><br/>
+                            <Button text="Refresh Projects" intent="primary" icon="refresh" className="bp3-small"
+                                    loading={this.props.refreshing} onClick={this.props.refresh} />
+                        </>
+                    )}
                 </Card>
 
                 {this.state.displayedProjects.length > 0 && this.state.displayedProjects.map((project, key) =>
