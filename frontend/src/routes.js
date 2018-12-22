@@ -29,13 +29,14 @@ class Routes extends Component {
         }]})
     }
 
-    updateProject(index, title="", description="", status="") {
+    updateProject(index, title="", description="", status="", priority="") {
         // TODO: add API request
         this.setState({projects: this.state.projects.map((project) => {
             if (project.id === index) {
                 project.title = (title !== "") ? title : project.title;
                 project.description = (description !== "") ? description : project.description;
                 project.status = (status !== "") ? status : project.status;
+                project.priority = (priority !== "") ? priority : project.priority;
             }
             return project;
         })});
@@ -61,6 +62,7 @@ class Routes extends Component {
                         author: "Test User",
                         author_id: "an id",
                         status: "completed",
+                        priority: 3,
                         status_date: new Date().toLocaleDateString(),
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
@@ -72,6 +74,7 @@ class Routes extends Component {
                         author: "Test User",
                         author_id: "an id",
                         status: "working",
+                        priority: 2,
                         status_date: new Date().toLocaleDateString(),
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
@@ -83,6 +86,7 @@ class Routes extends Component {
                         author: "Test User",
                         author_id: "an id",
                         status: "queued",
+                        priority: 1,
                         status_date: new Date().toLocaleDateString(),
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
@@ -94,6 +98,7 @@ class Routes extends Component {
                         author: "Test User",
                         author_id: "an id",
                         status: "ignored",
+                        priority: 0,
                         status_date: new Date().toLocaleDateString(),
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false

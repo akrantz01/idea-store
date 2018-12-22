@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Card, Elevation, Navbar, Alignment,
     Tag, Tooltip, Position, Button, Collapse,
     Alert, Dialog, Classes, FormGroup,
-    InputGroup, TextArea, HTMLSelect} from "@blueprintjs/core";
+    InputGroup, TextArea, HTMLSelect, NumericInput} from "@blueprintjs/core";
 
 class ProjectItem extends Component {
     constructor(props) {
@@ -15,7 +15,8 @@ class ProjectItem extends Component {
             editData: {
                 title: "",
                 description: "",
-                status: this.props.data.status
+                status: this.props.data.status,
+                priority: this.props.data.priority
             }
         };
     }
@@ -37,8 +38,8 @@ class ProjectItem extends Component {
 
     handleEdit() {
         this.toggleEdit();
-        this.props.onEdit(this.props.data.id, this.state.editData.title, this.state.editData.description, this.state.editData.status);
-        this.setState({editData: {title: "", description: ""}});
+        this.props.onEdit(this.props.data.id, this.state.editData.title, this.state.editData.description, this.state.editData.status, this.state.editData.priority);
+        this.setState({editData: {...this.state.editData, title: "", description: ""}});
     }
 
     handleTitleEdit = (event) => this.setState({editData: {...this.state.editData, title: event.target.value}});
@@ -46,6 +47,13 @@ class ProjectItem extends Component {
     handleDescriptionEdit = (event) => this.setState({editData: {...this.state.editData, description: event.target.value}});
 
     handleStatusEdit = (event) => this.setState({editData: {...this.state.editData, status: event.target.value}});
+
+    handlePriorityEdit = (priority) => {
+        if (priority > 3) priority = 3;
+        else if (priority < 0) priority = 0;
+        if (isNaN(priority)) priority = 0;
+        this.setState({editData: {...this.state.editData, priority}});
+    };
 
     render() {
         const style = {
@@ -85,6 +93,8 @@ class ProjectItem extends Component {
                                 </Tooltip>
                             )}
 
+                            { this.props.data.priority !== 0 && <Tag className="priority-tag">Priority: {this.props.data.priority}</Tag>}
+
                         </Navbar.Group>
 
                         { this.props.authenticated && (JSON.parse(localStorage.getItem("profile")).sub === this.props.data.author_id || this.props.admin()) && (
@@ -121,13 +131,18 @@ class ProjectItem extends Component {
                             <TextArea className="bp3-fill" value={this.state.editData.description} placeholder={this.props.data.description} onChange={this.handleDescriptionEdit.bind(this)}/>
                         </FormGroup>
                         { this.props.authenticated && this.props.admin() && (
-                            <FormGroup label="Status:" labelFor="status" inline={true}>
-                                <HTMLSelect id="status" value={this.state.editData.status} onChange={this.handleStatusEdit.bind(this)}>
-                                    <option value="completed">Completed</option>
-                                    <option value="working">In Progress</option>
-                                    <option value="queued">Queued</option>
-                                </HTMLSelect>
-                            </FormGroup>
+                            <>
+                                <FormGroup label="Status:" labelFor="status" inline={true}>
+                                    <HTMLSelect id="status" value={this.state.editData.status} onChange={this.handleStatusEdit.bind(this)}>
+                                        <option value="completed">Completed</option>
+                                        <option value="working">In Progress</option>
+                                        <option value="queued">Queued</option>
+                                    </HTMLSelect>
+                                </FormGroup>
+                                <FormGroup label="Priority:" labelFor="priority" inline={true}>
+                                    <NumericInput id="priority" name="ns-priority" minorStepSize={null} majorStepSize={null} min={0} max={3} value={this.state.editData.priority} onValueChange={this.handlePriorityEdit.bind(this)}/>
+                                </FormGroup>
+                            </>
                         )}
                     </div>
                     <div className={Classes.DIALOG_FOOTER}>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Card, Elevation, H3, H4, H6, Button,
     MenuItem, Switch, Navbar, Alignment, Tab,
-    Tabs, FormGroup, Tooltip, Position} from "@blueprintjs/core";
+    Tabs, FormGroup, Tooltip, Position, NumericInput} from "@blueprintjs/core";
 import {MultiSelect} from "@blueprintjs/select";
 import {DateRangeInput} from "@blueprintjs/datetime";
 import { filterProject, highlightText } from './Project';
@@ -18,6 +18,7 @@ class Home extends Component {
                 working: true,
                 queued: true,
                 ignored: false,
+                priority: 0,
                 range: [null, null]
             },
             currentTab: "default"
@@ -27,6 +28,7 @@ class Home extends Component {
     componentDidMount() {
         this.props.refresh();
         document.evaluate("//input[@class='bp3-input-ghost']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.style.width = "200px";
+        document.getElementById("priority").style.width = "50px";
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -41,6 +43,8 @@ class Home extends Component {
             if (this.state.filters.range[0] !== null && this.state.filters.range[1] !== null) {
                 if (!(this.state.filters.range[0] <= new Date(p.added_date) && new Date(p.added_date) <= this.state.filters.range[1])) return false;
             }
+
+            if (this.state.filters.priority > p.priority) return false;
 
             if (this.state.filters.ignored && p.status === "ignored") return true;
             if (this.state.filters.queued && p.status === "queued") return true;
@@ -84,6 +88,13 @@ class Home extends Component {
     handleClearTags = () => this.setState({selectedProjects: []});
 
     handleTabChange = (currentTab) => this.setState({currentTab});
+
+    handlePriorityChange = (priority) => {
+        if (priority > 3) priority = 3;
+        else if (priority < 0) priority = 0;
+        if (isNaN(priority)) priority = 0;
+        this.setState({filters: {...this.state.filters, priority}});
+    };
 
     handleDateRangeChange = (range) => this.setState({filters: {...this.state.filters, range}});
 
@@ -159,6 +170,11 @@ class Home extends Component {
                     <Tooltip content="Projects that I don't currently plan on working on" position={Position.BOTTOM}>
                         <Switch name="cb-ignored" inline={true} label="Ignored" checked={this.state.filters.ignored} onChange={this.handleFilterChange.bind(this)}/>
                     </Tooltip>
+
+                    <FormGroup label="Minimum Priority:" labelFor="priority" inline={true}>
+                        <NumericInput id="priority" name="ns-priority" minorStepSize={null} majorStepSize={null} min={0}
+                                      max={3} value={this.state.filters.priority} onValueChange={this.handlePriorityChange.bind(this)}/>
+                    </FormGroup>
 
                     <FormGroup label="Date Created:" labelFor="daterange" inline={true}>
                         <DateRangeInput formatDate={date => date.toLocaleDateString()} parseDate={str => new Date(str)}
