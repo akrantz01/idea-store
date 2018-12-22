@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import {Card, Elevation, H3, H4, H6, Button, MenuItem, Switch, Navbar, Alignment, Tab, Tabs} from "@blueprintjs/core";
+import {Card, Elevation, H3, H4, H6, Button,
+    MenuItem, Switch, Navbar, Alignment, Tab,
+    Tabs, FormGroup} from "@blueprintjs/core";
 import {MultiSelect} from "@blueprintjs/select";
+import {DateRangeInput} from "@blueprintjs/datetime";
 import { filterProject, highlightText } from './Project';
 import ProjectItem from "./ProjectItem";
 
@@ -13,7 +16,8 @@ class Home extends Component {
             filters: {
                 completed: false,
                 working: true,
-                queued: true
+                queued: true,
+                range: [null, null]
             },
             currentTab: "default"
         };
@@ -33,6 +37,10 @@ class Home extends Component {
 
     filterProjects(projects) {
         return projects.filter((p) => {
+            if (this.state.filters.range[0] !== null && this.state.filters.range[1] !== null) {
+                if (!(this.state.filters.range[0] <= new Date(p.added_date) && new Date(p.added_date) <= this.state.filters.range[1])) return false;
+            }
+
             if (this.state.filters.queued && p.status === "queued") return true;
             if (this.state.filters.working && p.status === "working") return true;
             return this.state.filters.completed && p.status === "completed";
@@ -60,20 +68,20 @@ class Home extends Component {
 
     renderTag = (project) => project.title;
 
-    handleTagRemove(_tag, index) {
-        this.setState({selectedProjects: this.state.selectedProjects.filter((_p, i) => i !== index)});
-    }
+    handleTagRemove = (_tag, index) => this.setState({selectedProjects: this.state.selectedProjects.filter((_p, i) => i !== index)});
 
     handleProjectSelect(project) {
         if (!this.isProjectSelected(project)) this.selectProject(project);
         else this.deselectProject(this.getSelectedProjectIndex(project));
     }
 
-    handleClearTags() {
-        this.setState({selectedProjects: []})
-    }
+    handleClearTags = () => this.setState({selectedProjects: []});
 
-    handleTabChange = (currentTab) => {this.setState({currentTab})};
+    handleTabChange = (currentTab) => this.setState({currentTab});
+
+    handleDateRangeChange = (range) => this.setState({filters: {...this.state.filters, range}});
+
+    handleDateRangeClear = () => this.setState({filters: {...this.state.filters, range: [null, null]}});
 
     render() {
         const { isAuthenticated, isAdmin } = this.props.auth;
@@ -136,9 +144,16 @@ class Home extends Component {
                     <Switch name="cb-completed" inline={true} label="Completed" checked={this.state.filters.completed} onChange={this.handleFilterChange.bind(this)}/>
                     <Switch name="cb-working" inline={true} label="In Progress" checked={this.state.filters.working} onChange={this.handleFilterChange.bind(this)}/>
                     <Switch name="cb-queued" inline={true} label="Queued" checked={this.state.filters.queued} onChange={this.handleFilterChange.bind(this)}/>
+
+                    <FormGroup label="Date Created:" labelFor="daterange" inline={true}>
+                        <DateRangeInput formatDate={date => date.toLocaleDateString()} parseDate={str => new Date(str)}
+                                        allowSingleDayRange={true} value={this.state.filters.range} onChange={this.handleDateRangeChange.bind(this)}/>
+                        <Button icon="cross" minimal={true} onClick={this.handleDateRangeClear.bind(this)}/>
+                    </FormGroup>
+
                     { isAdmin() && (
                         <>
-                            <br/><br/>
+                            <br/>
                             <Button text="Refresh Projects" intent="primary" icon="refresh" className="bp3-small"
                                     loading={this.props.refreshing} onClick={this.props.refresh} />
                         </>

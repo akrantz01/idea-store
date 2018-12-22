@@ -797,6 +797,16 @@
     resize-observer-polyfill "^1.5.0"
     tslib "^1.9.0"
 
+"@blueprintjs/datetime@^3.5.0":
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/datetime/-/datetime-3.5.0.tgz#a16db852fc2041d53d7a46c70b724a426de0f6c9"
+  integrity sha512-9oSrab3fDjdajD5MVnpVe8bxWNMku0arM3ge4Y6er0jMRqZXwF8al0ENrjUiYas5LkN8LQK+7TSpB2nsHesdJA==
+  dependencies:
+    "@blueprintjs/core" "^3.10.0"
+    classnames "^2.2"
+    react-day-picker "^7.1.10"
+    tslib "^1.9.0"
+
 "@blueprintjs/icons@^3.4.0":
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/@blueprintjs/icons/-/icons-3.4.0.tgz#893250c32dbc09add6b988f1ed27b239d6aea6a5"
@@ -7952,6 +7962,13 @@ react-app-polyfill@^0.1.3:
     promise "8.0.2"
     raf "3.4.0"
     whatwg-fetch "3.0.0"
+
+react-day-picker@^7.1.10:
+  version "7.2.4"
+  resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-7.2.4.tgz#3c3bea7aa1910bef7bad17f25ff15cd26a7d1848"
+  integrity sha512-LaePKijvAdXTrQhTyU7XfxxD5NQIFb4FH4vr1T862xNtmncoS8jZLliyHieMHNhZZ8RJU1pruqoQzkZQ05646w==
+  dependencies:
+    prop-types "^15.6.2"
 
 react-dev-utils@^6.1.1:
   version "6.1.1"

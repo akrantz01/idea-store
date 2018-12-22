@@ -56,35 +56,35 @@ class Routes extends Component {
                 projects: [
                     {
                         id: 1,
-                        status_date: new Date().toDateString(),
-                        status: "completed",
                         title: "Completed Project",
                         description: "This is a test project. It is solely for testing purposes. A user should never see it.",
                         author: "Test User",
                         author_id: "an id",
-                        added_date: new Date().toDateString(),
+                        status: "completed",
+                        status_date: new Date().toLocaleDateString(),
+                        added_date: new Date().toLocaleDateString(),
                         edited_date: false
                     },
                     {
                         id: 2,
-                        status_date: new Date().toDateString(),
-                        status: "working",
                         title: "In Progress Project",
                         description: "This is a test project. It is solely for testing purposes. A user should never see it.",
                         author: "Test User",
                         author_id: "an id",
-                        added_date: new Date().toDateString(),
+                        status: "working",
+                        status_date: new Date().toLocaleDateString(),
+                        added_date: new Date().toLocaleDateString(),
                         edited_date: false
                     },
                     {
                         id: 3,
-                        status_date: new Date().toDateString(),
-                        status: "queued",
                         title: "Queued Project",
                         description: "This is a test project. It is solely for testing purposes. A user should never see it.",
                         author: "Test User",
                         author_id: "an id",
-                        added_date: new Date().toDateString(),
+                        status: "queued",
+                        status_date: new Date().toLocaleDateString(),
+                        added_date: new Date().toLocaleDateString(),
                         edited_date: false
                     }
                 ]
