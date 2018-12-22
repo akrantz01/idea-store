@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Card, Elevation, H3, H4, H6, Button,
     MenuItem, Switch, Navbar, Alignment, Tab,
-    Tabs, FormGroup} from "@blueprintjs/core";
+    Tabs, FormGroup, Tooltip, Position} from "@blueprintjs/core";
 import {MultiSelect} from "@blueprintjs/select";
 import {DateRangeInput} from "@blueprintjs/datetime";
 import { filterProject, highlightText } from './Project';
@@ -147,10 +147,18 @@ class Home extends Component {
                     />
                     <br/><br/>
                     <H6>Filters:</H6>
-                    <Switch name="cb-completed" inline={true} label="Completed" checked={this.state.filters.completed} onChange={this.handleFilterChange.bind(this)}/>
-                    <Switch name="cb-working" inline={true} label="In Progress" checked={this.state.filters.working} onChange={this.handleFilterChange.bind(this)}/>
-                    <Switch name="cb-queued" inline={true} label="Queued" checked={this.state.filters.queued} onChange={this.handleFilterChange.bind(this)}/>
-                    <Switch name="cb-ignored" inline={true} label="Ignored" checked={this.state.filters.ignored} onChange={this.handleFilterChange.bind(this)}/>
+                    <Tooltip content="Projects that I have already completed" intent="success" position={Position.BOTTOM}>
+                        <Switch name="cb-completed" inline={true} label="Completed" checked={this.state.filters.completed} onChange={this.handleFilterChange.bind(this)}/>
+                    </Tooltip>
+                    <Tooltip content="Projects that I am currently working on" intent="warning" position={Position.BOTTOM}>
+                        <Switch name="cb-working" inline={true} label="In Progress" checked={this.state.filters.working} onChange={this.handleFilterChange.bind(this)}/>
+                    </Tooltip>
+                    <Tooltip content="Projects that I plan to work on sometime in the future" intent="primary" position={Position.BOTTOM}>
+                        <Switch name="cb-queued" inline={true} label="Queued" checked={this.state.filters.queued} onChange={this.handleFilterChange.bind(this)}/>
+                    </Tooltip>
+                    <Tooltip content="Projects that I don't currently plan on working on" position={Position.BOTTOM}>
+                        <Switch name="cb-ignored" inline={true} label="Ignored" checked={this.state.filters.ignored} onChange={this.handleFilterChange.bind(this)}/>
+                    </Tooltip>
 
                     <FormGroup label="Date Created:" labelFor="daterange" inline={true}>
                         <DateRangeInput formatDate={date => date.toLocaleDateString()} parseDate={str => new Date(str)}
