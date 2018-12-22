@@ -76,7 +76,12 @@ class ProjectItem extends Component {
                             )}
                             { this.props.data.status === "queued" && (
                                 <Tooltip content={`Queued on ${this.props.data.status_date}`} position={Position.TOP}>
-                                    <Tag>Queued</Tag>
+                                    <Tag intent="primary">Queued</Tag>
+                                </Tooltip>
+                            )}
+                            { this.props.data.status === "ignored" && (
+                                <Tooltip content={`Ignored on ${this.props.data.status_date}`} position={Position.TOP}>
+                                    <Tag>Ignored</Tag>
                                 </Tooltip>
                             )}
 

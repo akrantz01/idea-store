@@ -86,6 +86,17 @@ class Routes extends Component {
                         status_date: new Date().toLocaleDateString(),
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
+                    },
+                    {
+                        id: 4,
+                        title: "Ignored Project",
+                        description: "This is a test project. It is solely for testing purposes. A user should never see it.",
+                        author: "Test User",
+                        author_id: "an id",
+                        status: "ignored",
+                        status_date: new Date().toLocaleDateString(),
+                        added_date: new Date().toLocaleDateString(),
+                        edited_date: false
                     }
                 ]
             });

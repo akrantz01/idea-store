@@ -17,6 +17,7 @@ class Home extends Component {
                 completed: false,
                 working: true,
                 queued: true,
+                ignored: false,
                 range: [null, null]
             },
             currentTab: "default"
@@ -41,6 +42,7 @@ class Home extends Component {
                 if (!(this.state.filters.range[0] <= new Date(p.added_date) && new Date(p.added_date) <= this.state.filters.range[1])) return false;
             }
 
+            if (this.state.filters.ignored && p.status === "ignored") return true;
             if (this.state.filters.queued && p.status === "queued") return true;
             if (this.state.filters.working && p.status === "working") return true;
             return this.state.filters.completed && p.status === "completed";
@@ -59,6 +61,10 @@ class Home extends Component {
 
             case "cb-queued":
                 this.setState({filters: {...this.state.filters, queued: !this.state.filters.queued}});
+                break;
+
+            case "cb-ignored":
+                this.setState({filters: {...this.state.filters, ignored: !this.state.filters.ignored}});
                 break;
 
             default:
@@ -144,6 +150,7 @@ class Home extends Component {
                     <Switch name="cb-completed" inline={true} label="Completed" checked={this.state.filters.completed} onChange={this.handleFilterChange.bind(this)}/>
                     <Switch name="cb-working" inline={true} label="In Progress" checked={this.state.filters.working} onChange={this.handleFilterChange.bind(this)}/>
                     <Switch name="cb-queued" inline={true} label="Queued" checked={this.state.filters.queued} onChange={this.handleFilterChange.bind(this)}/>
+                    <Switch name="cb-ignored" inline={true} label="Ignored" checked={this.state.filters.ignored} onChange={this.handleFilterChange.bind(this)}/>
 
                     <FormGroup label="Date Created:" labelFor="daterange" inline={true}>
                         <DateRangeInput formatDate={date => date.toLocaleDateString()} parseDate={str => new Date(str)}
