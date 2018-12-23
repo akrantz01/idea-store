@@ -45,9 +45,13 @@ class Routes extends Component {
         })});
     }
 
-    deleteProject(index) {
+    deleteProject(index, permanent=false) {
         // TODO: add API request
-        this.setState({projects: this.state.projects.filter((p) => p.id !== index)});
+        this.setState({projects: this.state.projects.filter((p) => {
+            if (p.id === index) p.deleted = true;
+            else if (p.id === index && permanent) return false;
+            return true;
+        })});
     }
 
     refreshProjects() {
@@ -67,6 +71,7 @@ class Routes extends Component {
                         status: "completed",
                         priority: 3,
                         public: true,
+                        deleted: false,
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
                     },
@@ -79,6 +84,7 @@ class Routes extends Component {
                         status: "working",
                         priority: 2,
                         public: true,
+                        deleted: false,
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
                     },
@@ -91,6 +97,7 @@ class Routes extends Component {
                         status: "queued",
                         priority: 1,
                         public: true,
+                        deleted: false,
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
                     },
@@ -103,6 +110,7 @@ class Routes extends Component {
                         status: "ignored",
                         priority: 0,
                         public: true,
+                        deleted: false,
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
                     },
@@ -115,6 +123,7 @@ class Routes extends Component {
                         status: "working",
                         priority: 2,
                         public: false,
+                        deleted: false,
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
                     },
@@ -127,9 +136,23 @@ class Routes extends Component {
                         status: "queued",
                         priority: -1,
                         public: true,
+                        deleted: false,
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
                     },
+                    {
+                        id: 7,
+                        title: "Deleted Project",
+                        description: "This is a test project. It is solely for testing purposes. A user should never see it.",
+                        author: "Test User",
+                        author_id: "an id",
+                        status: "working",
+                        priority: 2,
+                        public: true,
+                        deleted: true,
+                        added_date: new Date().toLocaleDateString(),
+                        edited_date: false
+                    }
                 ]
             });
 

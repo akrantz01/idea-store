@@ -66,6 +66,7 @@ class Home extends Component {
             else if (this.state.filters.priority > p.priority && !priority) return false;
 
             if (!this.state.filters.private && !p.public) return false;
+            if (p.deleted) return false;
 
             if (this.state.filters.ignored && p.status === "ignored") return true;
             if (this.state.filters.queued && p.status === "queued") return true;
