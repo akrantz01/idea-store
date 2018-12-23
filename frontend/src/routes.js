@@ -38,6 +38,7 @@ class Routes extends Component {
                 project.description = (description !== "") ? description : project.description;
                 project.status = (status !== "") ? status : project.status;
                 project.priority = (priority !== "") ? priority : project.priority;
+                project.edited_date = new Date().toLocaleDateString();
             }
             return project;
         })});
@@ -65,7 +66,6 @@ class Routes extends Component {
                         status: "completed",
                         priority: 3,
                         public: true,
-                        status_date: new Date().toLocaleDateString(),
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
                     },
@@ -78,7 +78,6 @@ class Routes extends Component {
                         status: "working",
                         priority: 2,
                         public: true,
-                        status_date: new Date().toLocaleDateString(),
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
                     },
@@ -91,7 +90,6 @@ class Routes extends Component {
                         status: "queued",
                         priority: 1,
                         public: true,
-                        status_date: new Date().toLocaleDateString(),
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
                     },
@@ -104,7 +102,6 @@ class Routes extends Component {
                         status: "ignored",
                         priority: 0,
                         public: true,
-                        status_date: new Date().toLocaleDateString(),
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
                     },
@@ -117,7 +114,6 @@ class Routes extends Component {
                         status: "working",
                         priority: 2,
                         public: false,
-                        status_date: new Date().toLocaleDateString(),
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
                     }

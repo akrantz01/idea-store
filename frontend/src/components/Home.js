@@ -20,7 +20,8 @@ class Home extends Component {
                 ignored: false,
                 priority: 0,
                 private: false,
-                range: [null, null]
+                createRange: [null, null],
+                editRange: [null, null]
             },
             currentTab: "default"
         };
@@ -41,8 +42,13 @@ class Home extends Component {
 
     filterProjects(projects) {
         return projects.filter((p) => {
-            if (this.state.filters.range[0] !== null && this.state.filters.range[1] !== null) {
-                if (!(this.state.filters.range[0] <= new Date(p.added_date) && new Date(p.added_date) <= this.state.filters.range[1])) return false;
+            if (this.state.filters.createRange[0] !== null && this.state.filters.createRange[1] !== null) {
+                if (!(this.state.filters.createRange[0] <= new Date(p.added_date) && new Date(p.added_date) <= this.state.filters.createRange[1])) return false;
+            }
+
+            if (this.props.auth.isAdmin() && this.state.filters.editRange[0] !== null && this.state.filters.editRange[1] !== null) {
+                if (p.edited_date === false) return false;
+                if (!(this.state.filters.editRange[0] <= new Date(p.edited_date) && new Date(p.edited_date) <= this.state.filters.editRange[1])) return false;
             }
 
             if (this.state.filters.priority > p.priority) return false;
@@ -102,9 +108,13 @@ class Home extends Component {
         this.setState({filters: {...this.state.filters, priority}});
     };
 
-    handleDateRangeChange = (range) => this.setState({filters: {...this.state.filters, range}});
+    handleCreateDateRangeChange = (createRange) => this.setState({filters: {...this.state.filters, createRange}});
 
-    handleDateRangeClear = () => this.setState({filters: {...this.state.filters, range: [null, null]}});
+    handleCreateDateRangeClear = () => this.setState({filters: {...this.state.filters, createRange: [null, null]}});
+
+    handleEditDateRangeChange = (editRange) => this.setState({filters: {...this.state.filters, editRange}});
+
+    handleEditDateRangeClear = () => this.setState({filters: {...this.state.filters, editRange: [null, null]}});
 
     render() {
         const { isAuthenticated, isAdmin } = this.props.auth;
@@ -190,11 +200,21 @@ class Home extends Component {
                         </FormGroup>
                     </Tooltip>
 
-                    <FormGroup label="Date Created:" labelFor="daterange" inline={true}>
-                        <DateRangeInput formatDate={date => date.toLocaleDateString()} parseDate={str => new Date(str)}
-                                        allowSingleDayRange={true} value={this.state.filters.range} onChange={this.handleDateRangeChange.bind(this)}/>
-                        <Button icon="cross" minimal={true} onClick={this.handleDateRangeClear.bind(this)}/>
+                    <FormGroup label="Date Created:" labelFor="create-daterange" inline={true}>
+                        <DateRangeInput id="create-daterange" formatDate={date => date.toLocaleDateString()} parseDate={str => new Date(str)}
+                                        allowSingleDayRange={true} value={this.state.filters.createRange} onChange={this.handleCreateDateRangeChange.bind(this)}/>
+                        <Button icon="cross" minimal={true} onClick={this.handleCreateDateRangeClear.bind(this)}/>
                     </FormGroup>
+
+                    { isAdmin() && this.props.adminView && (
+                        <>
+                            <FormGroup label="Date Edited:" labelFor="edit-daterange" inline={true}>
+                                <DateRangeInput id="edit-daterange" formatDate={date => date.toLocaleDateString()} parseDate={str => new Date(str)}
+                                                allowSingleDayRange={true} value={this.state.filters.editRange} onChange={this.handleEditDateRangeChange.bind(this)}/>
+                                <Button icon="cross" minimal={true} onClick={this.handleEditDateRangeClear.bind(this)}/>
+                            </FormGroup>
+                        </>
+                    )}
 
                     { isAdmin() && this.props.adminView && (
                         <>

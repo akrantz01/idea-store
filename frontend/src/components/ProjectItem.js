@@ -72,26 +72,10 @@ class ProjectItem extends Component {
                         <Navbar.Group align={Alignment.LEFT}>
                             <Navbar.Heading style={{ fontSize: "18px" }}><b>{this.props.data.title}</b></Navbar.Heading>
 
-                            { this.props.data.status === "completed" && (
-                                <Tooltip content={`Completed on ${this.props.data.status_date}`} position={Position.TOP}>
-                                    <Tag intent="success">Completed</Tag>
-                                </Tooltip>
-                            )}
-                            { this.props.data.status === "working" && (
-                                <Tooltip content={`Working on since ${this.props.data.status_date}`} position={Position.TOP}>
-                                    <Tag intent="warning">In Progress</Tag>
-                                </Tooltip>
-                            )}
-                            { this.props.data.status === "queued" && (
-                                <Tooltip content={`Queued on ${this.props.data.status_date}`} position={Position.TOP}>
-                                    <Tag intent="primary">Queued</Tag>
-                                </Tooltip>
-                            )}
-                            { this.props.data.status === "ignored" && (
-                                <Tooltip content={`Ignored on ${this.props.data.status_date}`} position={Position.TOP}>
-                                    <Tag>Ignored</Tag>
-                                </Tooltip>
-                            )}
+                            { this.props.data.status === "completed" && <Tag intent="success">Completed</Tag>}
+                            { this.props.data.status === "working" && <Tag intent="warning">In Progress</Tag>}
+                            { this.props.data.status === "queued" && <Tag intent="primary">Queued</Tag>}
+                            { this.props.data.status === "ignored" && <Tag>Ignored</Tag>}
 
                             { this.props.data.priority !== 0 && <Tag className="priority-tag">Priority: {this.props.data.priority}</Tag>}
                             { !this.props.data.public && <Tag className="private-tag" intent="danger">Private</Tag> }
