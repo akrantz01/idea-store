@@ -11,7 +11,8 @@ const auth = new Auth();
 class Routes extends Component {
     state = {
         projects: [],
-        refreshing: false
+        refreshing: false,
+        adminView: false
     };
 
     createProject(title, description, author, author_id) {
@@ -126,14 +127,16 @@ class Routes extends Component {
         }, 1000);
     }
 
+    toggleAdminView = () => this.setState({adminView: !this.state.adminView});
+
     render() {
         return (
             <BrowserRouter history={history} component={App}>
                 <div>
-                    <Route path="/" render={(props) => <App auth={auth} createProject={this.createProject.bind(this)} {...props} />} />
+                    <Route path="/" render={(props) => <App auth={auth} createProject={this.createProject.bind(this)} toggle={this.toggleAdminView.bind(this)} enabled={this.state.adminView} {...props} />} />
                     <Route path="/home" render={(props) => <Home auth={auth} refreshing={this.state.refreshing} projects={this.state.projects}
                                                                  refresh={this.refreshProjects.bind(this)} update={this.updateProject.bind(this)}
-                                                                 delete={this.deleteProject.bind(this)} {...props} />} />
+                                                                 delete={this.deleteProject.bind(this)} adminView={this.state.adminView} {...props} />} />
                     <Route path="/callback" render={(props) => <Callback {...props} />} />
                 </div>
             </BrowserRouter>

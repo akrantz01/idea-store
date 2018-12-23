@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
-import {Button, Navbar, Alignment, Toaster} from "@blueprintjs/core";
+import {Button, Navbar, Alignment, Toaster,
+    Tooltip, Switch, Position} from "@blueprintjs/core";
 import history from './history';
 import AddProject from './components/AddProject';
 
@@ -46,7 +47,7 @@ class App extends React.Component {
     }
 
     render() {
-        const { isAuthenticated } = this.props.auth;
+        const { isAuthenticated, isAdmin } = this.props.auth;
 
         if (this.props.location.pathname === "/") history.replace("/home");
 
@@ -61,6 +62,14 @@ class App extends React.Component {
                     </Navbar.Group>
 
                     <Navbar.Group align={Alignment.RIGHT}>
+                        { isAdmin() && (
+                            <>
+                                <Tooltip content="Enable or disable the admin view" position={Position.LEFT}>
+                                    <Switch id="admin-view" label="Admin View" alignIndicator={Alignment.RIGHT} onChange={this.props.toggle} checked={this.props.enabled} className="admin-toggle"/>
+                                </Tooltip>
+                                <Navbar.Divider className="divider"/>
+                            </>
+                        )}
                         { !isAuthenticated() && <Button className="bp3-minimal" icon="user" text="Login" intent="primary" onClick={this.login.bind(this)}/> }
                         { isAuthenticated() && <Button className="bp3-minimal" icon="user" text="Logout" intent="danger" onClick={this.logout.bind(this)}/> }
                     </Navbar.Group>

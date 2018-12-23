@@ -17,3 +17,11 @@ body {
 .private-tag {
   margin-left: 5px;
 }
+
+.admin-toggle {
+  margin-top: 10px;
+}
+
+.divider {
+  margin-left: 20px;
+}

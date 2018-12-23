@@ -120,7 +120,7 @@ class Home extends Component {
 
         return (
             <div className="container">
-                { !isAdmin() && (
+                { (!this.props.adminView || !isAdmin()) && (
                     <Card elevation={Elevation.THREE} style={style.heading_card}>
                         <H3>Projects</H3>
                         <p>Below is a list of projects that I am either currently working on
@@ -134,9 +134,9 @@ class Home extends Component {
                     </Card>
                 )}
 
-                <Card elevation={(isAdmin()) ? Elevation.THREE : Elevation.TWO} style={style.heading_card}>
+                <Card elevation={(isAdmin() && this.props.adminView) ? Elevation.THREE : Elevation.TWO} style={style.heading_card}>
 
-                    { isAdmin() && (
+                    { isAdmin() && this.props.adminView && (
                         <>
                             <Tabs id="admin-view" onChange={this.handleTabChange} selectedTabId={this.state.currentTab}>
                                 <Tab id="default" title="All Projects"/>
@@ -147,7 +147,7 @@ class Home extends Component {
                         </>
                     )}
 
-                    { (isAdmin()) ? <H6>Search</H6> : <H4>Search</H4>}
+                    { (isAdmin() && this.props.adminView) ? <H6>Search</H6> : <H4>Search</H4>}
                     <MultiSelect
                         initialContent={undefined}
                         itemPredicate={filterProject}
@@ -176,7 +176,7 @@ class Home extends Component {
                     <Tooltip content="Projects that I don't currently plan on working on" position={Position.BOTTOM}>
                         <Switch name="cb-ignored" inline={true} label="Ignored" checked={this.state.filters.ignored} onChange={this.handleFilterChange.bind(this)}/>
                     </Tooltip>
-                    { isAdmin() && (
+                    { isAdmin() && this.props.adminView && (
                         <Tooltip content={"Privately request projects"} intent="danger" position={Position.BOTTOM}>
                             <Switch name="cb-private" inline={true} label="Private" checked={this.state.filters.private} onChange={this.handleFilterChange.bind(this)}/>
                         </Tooltip>
@@ -196,7 +196,7 @@ class Home extends Component {
                         <Button icon="cross" minimal={true} onClick={this.handleDateRangeClear.bind(this)}/>
                     </FormGroup>
 
-                    { isAdmin() && (
+                    { isAdmin() && this.props.adminView && (
                         <>
                             <br/>
                             <Button text="Refresh Projects" intent="primary" icon="refresh" className="bp3-small"
@@ -228,11 +228,11 @@ class Home extends Component {
                     </>
                 )}
 
-                { isAdmin() && this.state.currentTab === "private" && (
+                { isAdmin() && this.props.adminView && this.state.currentTab === "private" && (
                     <p>Private Projects</p>
                 )}
 
-                { isAdmin() && this.state.currentTab === "priority" && (
+                { isAdmin() && this.props.adminView && this.state.currentTab === "priority" && (
                     <p>Projects Without Priority</p>
                 )}
             </div>
