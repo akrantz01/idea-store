@@ -175,7 +175,7 @@ class Home extends Component {
                         initialContent={undefined}
                         itemPredicate={filterProject}
                         itemRenderer={this.renderProject}
-                        items={this.state.displayedProjects}
+                        items={(this.state.currentTab === "new") ? this.filterProjects(this.props.projects, true) : this.state.displayedProjects}
                         noResults={<MenuItem text={"No Results."} disabled={true}/>}
                         onItemSelect={this.handleProjectSelect.bind(this)}
                         popoverProps={{ minimal: true }}
