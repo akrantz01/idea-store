@@ -51,7 +51,7 @@ class Home extends Component {
         }
     }
 
-    filterProjects(projects) {
+    filterProjects(projects, priority=false) {
         return projects.filter((p) => {
             if (this.state.filters.createRange[0] !== null && this.state.filters.createRange[1] !== null) {
                 if (!(this.state.filters.createRange[0] <= new Date(p.added_date) && new Date(p.added_date) <= this.state.filters.createRange[1])) return false;
@@ -62,7 +62,9 @@ class Home extends Component {
                 if (!(this.state.filters.editRange[0] <= new Date(p.edited_date) && new Date(p.edited_date) <= this.state.filters.editRange[1])) return false;
             }
 
-            if (this.state.filters.priority > p.priority) return false;
+            if (priority && p.priority !== -1) return false;
+            else if (this.state.filters.priority > p.priority && !priority) return false;
+
             if (!this.state.filters.private && !p.public) return false;
 
             if (this.state.filters.ignored && p.status === "ignored") return true;
@@ -207,7 +209,7 @@ class Home extends Component {
                     <Tooltip content={"What I am most to least likely to work on with 0 being the lowest and 3 being the highest"} position={Position.TOP}>
                         <FormGroup label="Minimum Priority:" labelFor="priority" inline={true}>
                             <NumericInput id="priority" name="ns-priority" minorStepSize={null} majorStepSize={null} min={0}
-                                          max={3} value={this.state.filters.priority} onValueChange={this.handlePriorityChange.bind(this)}/>
+                                          max={3} value={this.state.filters.priority} onValueChange={this.handlePriorityChange.bind(this)} disabled={this.state.currentTab === "new"}/>
                         </FormGroup>
                     </Tooltip>
 
@@ -244,27 +246,47 @@ class Home extends Component {
 
                         {this.state.displayedProjects.length === 0 && (
                             <Card elevation={Elevation.ONE} style={style.dne_card}>
-                            <Navbar style={{ boxShadow: "none" }}>
-                            <Navbar.Group align={Alignment.LEFT}>
-                            <Navbar.Heading style={{ fontSize: "18px" }}><b>No Projects in Database</b></Navbar.Heading>
-                            </Navbar.Group>
+                                <Navbar style={{ boxShadow: "none" }}>
+                                    <Navbar.Group align={Alignment.LEFT}>
+                                        <Navbar.Heading style={{ fontSize: "18px" }}><b>No Projects in Database with Current Filters</b></Navbar.Heading>
+                                    </Navbar.Group>
 
-                            <Navbar.Group align={Alignment.RIGHT}>
-                            <Button text="Refresh Projects" intent="primary" icon="refresh" className="bp3-small"
-                            loading={this.props.refreshing} onClick={this.props.refresh} />
-                            </Navbar.Group>
-                            </Navbar>
+                                    <Navbar.Group align={Alignment.RIGHT}>
+                                        <Button text="Refresh Projects" intent="primary" icon="refresh" className="bp3-small"
+                                                loading={this.props.refreshing} onClick={this.props.refresh} />
+                                    </Navbar.Group>
+                                </Navbar>
                             </Card>
                         )}
                     </>
                 )}
 
-                { isAdmin() && this.props.adminView && this.state.currentTab === "private" && (
-                    <p>Private Projects</p>
+                { isAdmin() && this.props.adminView && this.state.currentTab === "new" && (
+                    <>
+                        {this.state.displayedProjects.length > 0 && this.filterProjects(this.props.projects, true).map((project, key) =>
+                            <ProjectItem authenticated={isAuthenticated()} admin={isAdmin} data={project} key={key} onDelete={this.props.delete}
+                                         onEdit={this.props.update}/>
+                        )}
+
+                        {this.filterProjects(this.props.projects, true).length === 0 && (
+                            <Card elevation={Elevation.ONE} style={style.dne_card}>
+                                <Navbar style={{ boxShadow: "none" }}>
+                                    <Navbar.Group align={Alignment.LEFT}>
+                                        <Navbar.Heading style={{ fontSize: "18px" }}><b>No New Projects in Database with Current Filters</b></Navbar.Heading>
+                                    </Navbar.Group>
+
+                                    <Navbar.Group align={Alignment.RIGHT}>
+                                        <Button text="Refresh Projects" intent="primary" icon="refresh" className="bp3-small"
+                                                loading={this.props.refreshing} onClick={this.props.refresh} />
+                                    </Navbar.Group>
+                                </Navbar>
+                            </Card>
+                        )}
+                    </>
                 )}
 
-                { isAdmin() && this.props.adminView && this.state.currentTab === "priority" && (
-                    <p>Projects Without Priority</p>
+                { isAdmin() && this.props.adminView && this.state.currentTab === "deleted" && (
+                    <p>Deleted Projects</p>
                 )}
             </div>
         );
