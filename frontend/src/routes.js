@@ -117,7 +117,19 @@ class Routes extends Component {
                         public: false,
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
-                    }
+                    },
+                    {
+                        id: 6,
+                        title: "New Project",
+                        description: "This is a test project. It is solely for testing purposes. A user should never see it.",
+                        author: "Test User",
+                        author_id: "an id",
+                        status: "queued",
+                        priority: -1,
+                        public: true,
+                        added_date: new Date().toLocaleDateString(),
+                        edited_date: false
+                    },
                 ]
             });
 
