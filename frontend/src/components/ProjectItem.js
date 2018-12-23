@@ -11,6 +11,7 @@ class ProjectItem extends Component {
         this.state = {
             description: false,
             deleteWarning: false,
+            undoWarning: false,
             edit: false,
             editData: {
                 title: "",
@@ -29,9 +30,21 @@ class ProjectItem extends Component {
 
     toggleDeleteWarning = () => this.setState({deleteWarning: !this.state.deleteWarning});
 
-    handleDelete() {
+    toggleUndoWarning = () => this.setState({undoWarning: !this.state.undoWarning});
+
+    handleTemporaryDelete() {
         this.toggleDeleteWarning();
         this.props.onDelete(this.props.data.id);
+    }
+
+    handlePermanentDelete() {
+        this.toggleDeleteWarning();
+        this.props.onDelete(this.props.data.id, true);
+    }
+
+    handleUndo() {
+        this.toggleUndoWarning();
+        this.props.onUndo(this.props.data.id);
     }
 
     toggleEdit = () => this.setState({edit: !this.state.edit});
@@ -82,9 +95,17 @@ class ProjectItem extends Component {
 
                         </Navbar.Group>
 
-                        { this.props.authenticated && (JSON.parse(localStorage.getItem("profile")).sub === this.props.data.author_id || this.props.admin()) && (
+                        { this.props.authenticated && !this.props.data.deleted && (JSON.parse(localStorage.getItem("profile")).sub
+                            === this.props.data.author_id || this.props.admin()) && (
                             <Navbar.Group align={Alignment.RIGHT}>
                                 <Button icon="edit" minimal={true} onClick={this.toggleEdit.bind(this)}/>
+                                <Navbar.Divider/>
+                                <Button icon="delete" minimal={true} intent="danger" onClick={this.toggleDeleteWarning.bind(this)}/>
+                            </Navbar.Group>
+                        )}
+                        { this.props.authenticated && this.props.data.deleted && this.props.admin() && (
+                            <Navbar.Group align={Alignment.RIGHT}>
+                                <Button icon="undo" minimal={true} onClick={this.toggleUndoWarning.bind(this)}/>
                                 <Navbar.Divider/>
                                 <Button icon="delete" minimal={true} intent="danger" onClick={this.toggleDeleteWarning.bind(this)}/>
                             </Navbar.Group>
@@ -95,16 +116,24 @@ class ProjectItem extends Component {
 
                         { this.props.data.edited_date && (
                             <Tooltip content={`Edited on ${this.props.data.edited_date}`} position={Position.BOTTOM}>
-                                <div className="bp3-text-muted bp3-text-small"><b>{(this.props.admin(this.props.data.author_id)) ? "Added" : "Requested"} by {this.props.data.author}</b> on {this.props.data.added_date}</div>
+                                <div className="bp3-text-muted bp3-text-small"><b>{(this.props.admin(this.props.data.author_id)) ? "Added" : "Requested"} by
+                                    {this.props.data.author}</b> on {this.props.data.added_date}</div>
                             </Tooltip>
                         )}
-                        { !this.props.data.edited_date && <div className="bp3-text-muted bp3-text-small"><b>{(this.props.admin(this.props.data.author_id)) ? "Added" : "Requested"} by {this.props.data.author}</b> on {this.props.data.added_date}</div>}
+                        { !this.props.data.edited_date && <div className="bp3-text-muted bp3-text-small"><b>{(this.props.admin(this.props.data.author_id))
+                            ? "Added" : "Requested"} by {this.props.data.author}</b> on {this.props.data.added_date}</div>}
                     </Collapse>
                 </Card>
 
                 <Alert cancelButtonText="Nevermind" confirmButtonText="Delete" icon="trash" intent="danger"
-                       isOpen={this.state.deleteWarning} onCancel={this.toggleDeleteWarning.bind(this)} onConfirm={this.handleDelete.bind(this)}>
-                    <p>Are you sure you want to delete this project? It will be gone forever unless the administrator re-opens it.</p>
+                       isOpen={this.state.deleteWarning} onCancel={this.toggleDeleteWarning.bind(this)} onConfirm={(this.props.data.deleted)
+                    ? this.handlePermanentDelete.bind(this) : this.handleTemporaryDelete.bind(this)}>
+                    <p>Are you sure you want to delete this project? It will be gone forever{(this.props.data.deleted) ? "." : " unless the administrator re-opens it."}</p>
+                </Alert>
+
+                <Alert cancelButtonText="Nevermind" confirmButtonText="Undo" icon="undo" intent="warning" isOpen={this.state.undoWarning}
+                       onClose={this.toggleUndoWarning.bind(this)} onConfirm={this.handleUndo.bind(this)}>
+                    <p>Are you sure you want to undo the deletion of a project?</p>
                 </Alert>
 
                 <Dialog icon="edit" onClose={this.toggleEdit.bind(this)} isOpen={this.state.edit} title="Edit Project" autoFocus={true} canEscapeKeyClose={true} canOutsideClickClose={true} enforceFocus={true} usePortal={true}>

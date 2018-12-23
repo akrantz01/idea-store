@@ -48,8 +48,16 @@ class Routes extends Component {
     deleteProject(index, permanent=false) {
         // TODO: add API request
         this.setState({projects: this.state.projects.filter((p) => {
-            if (p.id === index) p.deleted = true;
+            if (p.id === index && !permanent) p.deleted = true;
             else if (p.id === index && permanent) return false;
+            return true;
+        })});
+    }
+
+    undoDeleteProject(index) {
+        // TODO: add API request
+        this.setState({projects: this.state.projects.filter((p) => {
+            if (p.id === index) p.deleted = false;
             return true;
         })});
     }
@@ -171,7 +179,8 @@ class Routes extends Component {
                                                             enabled={this.state.adminView} adminLogout={this.toggleAdminLogout.bind(this)} {...props} />} />
                     <Route path="/home" render={(props) => <Home auth={auth} refreshing={this.state.refreshing} projects={this.state.projects}
                                                                  refresh={this.refreshProjects.bind(this)} update={this.updateProject.bind(this)}
-                                                                 delete={this.deleteProject.bind(this)} adminView={this.state.adminView} loggedOut={this.state.adminLogout} {...props} />} />
+                                                                 delete={this.deleteProject.bind(this)} undo={this.undoDeleteProject.bind(this)}
+                                                                 adminView={this.state.adminView} loggedOut={this.state.adminLogout} {...props} />} />
                     <Route path="/callback" render={(props) => <Callback {...props} />} />
                 </div>
             </BrowserRouter>

@@ -51,7 +51,7 @@ class Home extends Component {
         }
     }
 
-    filterProjects(projects, priority=false) {
+    filterProjects(projects, priority=false, deleted=false) {
         return projects.filter((p) => {
             if (this.state.filters.createRange[0] !== null && this.state.filters.createRange[1] !== null) {
                 if (!(this.state.filters.createRange[0] <= new Date(p.added_date) && new Date(p.added_date) <= this.state.filters.createRange[1])) return false;
@@ -65,8 +65,10 @@ class Home extends Component {
             if (priority && p.priority !== -1) return false;
             else if (this.state.filters.priority > p.priority && !priority) return false;
 
+            if (p.deleted && !deleted) return false;
+            else if (!p.deleted && deleted) return false;
+
             if (!this.state.filters.private && !p.public) return false;
-            if (p.deleted) return false;
 
             if (this.state.filters.ignored && p.status === "ignored") return true;
             if (this.state.filters.queued && p.status === "queued") return true;
@@ -243,7 +245,7 @@ class Home extends Component {
                     <>
                         {this.state.displayedProjects.length > 0 && this.state.displayedProjects.map((project, key) =>
                                 <ProjectItem authenticated={isAuthenticated()} admin={isAdmin} data={project} key={key} onDelete={this.props.delete}
-                                             onEdit={this.props.update}/>)}
+                                             onEdit={this.props.update} onUndo={this.props.undo}/>)}
 
                         {this.state.displayedProjects.length === 0 && (
                             <Card elevation={Elevation.ONE} style={style.dne_card}>
@@ -266,7 +268,7 @@ class Home extends Component {
                     <>
                         {this.state.displayedProjects.length > 0 && this.filterProjects(this.props.projects, true).map((project, key) =>
                             <ProjectItem authenticated={isAuthenticated()} admin={isAdmin} data={project} key={key} onDelete={this.props.delete}
-                                         onEdit={this.props.update}/>
+                                         onEdit={this.props.update} onUndo={this.props.undo}/>
                         )}
 
                         {this.filterProjects(this.props.projects, true).length === 0 && (
@@ -287,7 +289,27 @@ class Home extends Component {
                 )}
 
                 { isAdmin() && this.props.adminView && this.state.currentTab === "deleted" && (
-                    <p>Deleted Projects</p>
+                    <>
+                        {this.state.displayedProjects.length > 0 && this.filterProjects(this.props.projects, false, true).map((project, key) =>
+                            <ProjectItem authenticated={isAuthenticated()} admin={isAdmin} data={project} key={key} onDelete={this.props.delete}
+                                         onEdit={this.props.update} onUndo={this.props.undo}/>
+                        )}
+
+                        {this.filterProjects(this.props.projects, false, true).length === 0 && (
+                            <Card elevation={Elevation.ONE} style={style.dne_card}>
+                                <Navbar style={{ boxShadow: "none" }}>
+                                    <Navbar.Group align={Alignment.LEFT}>
+                                        <Navbar.Heading style={{ fontSize: "18px" }}><b>No New Projects in Database with Current Filters</b></Navbar.Heading>
+                                    </Navbar.Group>
+
+                                    <Navbar.Group align={Alignment.RIGHT}>
+                                        <Button text="Refresh Projects" intent="primary" icon="refresh" className="bp3-small"
+                                                loading={this.props.refreshing} onClick={this.props.refresh} />
+                                    </Navbar.Group>
+                                </Navbar>
+                            </Card>
+                        )}
+                    </>
                 )}
             </div>
         );
