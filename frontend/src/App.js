@@ -19,6 +19,10 @@ class App extends React.Component {
     }
 
     logout() {
+        if (this.props.auth.isAdmin()) {
+            this.props.adminLogout();
+            setTimeout(() => this.props.adminLogout(), 1000);
+        }
         this.props.auth.logout();
     }
 

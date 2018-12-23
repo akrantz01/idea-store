@@ -12,7 +12,8 @@ class Routes extends Component {
     state = {
         projects: [],
         refreshing: false,
-        adminView: false
+        adminView: false,
+        adminLogout: false
     };
 
     createProject(title, description, author, author_id) {
@@ -125,14 +126,17 @@ class Routes extends Component {
 
     toggleAdminView = () => this.setState({adminView: !this.state.adminView});
 
+    toggleAdminLogout = () => this.setState({adminLogout: !this.state.adminLogout});
+
     render() {
         return (
             <BrowserRouter history={history} component={App}>
                 <div>
-                    <Route path="/" render={(props) => <App auth={auth} createProject={this.createProject.bind(this)} toggle={this.toggleAdminView.bind(this)} enabled={this.state.adminView} {...props} />} />
+                    <Route path="/" render={(props) => <App auth={auth} createProject={this.createProject.bind(this)} toggle={this.toggleAdminView.bind(this)}
+                                                            enabled={this.state.adminView} adminLogout={this.toggleAdminLogout.bind(this)} {...props} />} />
                     <Route path="/home" render={(props) => <Home auth={auth} refreshing={this.state.refreshing} projects={this.state.projects}
                                                                  refresh={this.refreshProjects.bind(this)} update={this.updateProject.bind(this)}
-                                                                 delete={this.deleteProject.bind(this)} adminView={this.state.adminView} {...props} />} />
+                                                                 delete={this.deleteProject.bind(this)} adminView={this.state.adminView} loggedOut={this.state.adminLogout} {...props} />} />
                     <Route path="/callback" render={(props) => <Callback {...props} />} />
                 </div>
             </BrowserRouter>

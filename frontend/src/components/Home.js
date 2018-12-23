@@ -38,6 +38,17 @@ class Home extends Component {
             if (this.state.selectedProjects.length === 0) this.setState({displayedProjects: this.filterProjects(this.props.projects.slice())});
             else this.setState({displayedProjects: this.filterProjects(this.state.selectedProjects.slice())});
         }
+
+        if (prevProps.loggedOut !== this.props.loggedOut) {
+            this.setState({
+                currentTab: "default",
+                filters: {
+                    ...this.state.filters,
+                    private: false,
+                    editRange: [null, null]
+                }
+            });
+        }
     }
 
     filterProjects(projects) {
