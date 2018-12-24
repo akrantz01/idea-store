@@ -50,6 +50,22 @@ class App extends React.Component {
         this.setState({add: false});
     }
 
+    onRequests() {
+        if (this.props.auth.isAuthenticated()) history.replace("/requests");
+        else {
+            let t = Toaster.create({canEscapeKeyClear: true, autoFocus: true});
+            t.show({
+                message: "You must be logged in to view your requests.",
+                intent: "warning",
+                icon: "warning-sign",
+                action: {
+                    onClick: () => {this.login()},
+                    text: "Login"
+                }
+            });
+        }
+    }
+
     render() {
         const { isAuthenticated, isAdmin } = this.props.auth;
 
@@ -63,6 +79,7 @@ class App extends React.Component {
                         <Navbar.Divider/>
                         <Button className="bp3-minimal" icon="home" text="Home" onClick={this.onHome}/>
                         <Button className="bp3-minimal" icon="add" text="New Project" onClick={this.openAdd.bind(this)}/>
+                        <Button className="bp3-minimal" icon="form" text="Requests" onClick={this.onRequests.bind(this)}/>
                     </Navbar.Group>
 
                     <Navbar.Group align={Alignment.RIGHT}>

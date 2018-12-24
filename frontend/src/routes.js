@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { Route, BrowserRouter } from 'react-router-dom';
 import App from './App';
 import Home from './components/Home';
+import Requests from './components/Requests';
 import Callback from './components/Callback';
 import Auth from './components/Auth';
 import history from './history';
@@ -160,6 +161,19 @@ class Routes extends Component {
                         deleted: true,
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
+                    },
+                    {
+                        id: 8,
+                        title: "Requested Project",
+                        description: "This is a test project. It is solely for testing purposes. A user should never see it.",
+                        author: "Alex Krantz",
+                        author_id: "google-oauth2|102493818408140086770",
+                        status: "working",
+                        priority: 2,
+                        public: true,
+                        deleted: false,
+                        added_date: new Date().toLocaleDateString(),
+                        edited_date: false
                     }
                 ]
             });
@@ -181,6 +195,9 @@ class Routes extends Component {
                                                                  refresh={this.refreshProjects.bind(this)} update={this.updateProject.bind(this)}
                                                                  delete={this.deleteProject.bind(this)} undo={this.undoDeleteProject.bind(this)}
                                                                  adminView={this.state.adminView} loggedOut={this.state.adminLogout} {...props} />} />
+                    <Route path="/requests" render={(props) => <Requests auth={auth} projects={this.state.projects} refreshing={this.state.refreshing}
+                                                                         refresh={this.refreshProjects.bind(this)} update={this.updateProject.bind(this)}
+                                                                         delete={this.deleteProject.bind(this)} undo={this.undoDeleteProject.bind(this)} {...props}/>} />
                     <Route path="/callback" render={(props) => <Callback {...props} />} />
                 </div>
             </BrowserRouter>
