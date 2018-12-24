@@ -1,14 +1,17 @@
 import Auth0Lock from 'auth0-lock';
+import jwtDecode from 'jwt-decode';
 import history from '../history';
 
 const clientID = "OOzEz1kAxK8N02IUmipUcDEV7ltq0Abk";
 const domain = "alexkrantz.auth0.com";
 const redirectURL = "http://localhost:3000/callback";
+const adminID = "google-oauth2|102493818408140086770";
 
 export default class Auth {
     lock = new Auth0Lock(clientID, domain, {
         autoclose: true,
         auth: {
+            audience: "https://alexkrantz.auth0.com/userinfo",
             redirectUrl: redirectURL,
             responseType: "token id_token",
             params: {
@@ -24,10 +27,6 @@ export default class Auth {
         this.logout = this.logout.bind(this);
         this.isAuthenticated = this.isAuthenticated.bind(this);
         this.isAdmin = this.isAdmin.bind(this);
-
-        this.state = {
-            admin: "google-oauth2|102493818408140086770" // TODO: change to use Auth0 app_metadata instead
-        }
     }
 
     login() {
@@ -48,8 +47,9 @@ export default class Auth {
     }
 
     isAdmin(id="") {
-        if (id !== "") return this.state.admin === id;
-        return this.isAuthenticated() && this.state.admin === JSON.parse(localStorage.getItem("profile")).sub;
+        if (id !== "") return adminID === id;
+        return this.isAuthenticated() && adminID === JSON.parse(localStorage.getItem("profile")).sub
+            && jwtDecode(localStorage.getItem("id_token"))["https://alexkrantz.com/app_metadata"].isAdmin;
     }
 
     handleAuthentication() {
