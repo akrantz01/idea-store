@@ -17,7 +17,7 @@ class Routes extends Component {
         adminLogout: false
     };
 
-    createProject(title, description, author, author_id) {
+    createProject(title, description, author, author_id, p, commission) {
         // TODO: add API request
         this.setState({projects: [...this.state.projects, {
             id: Math.floor((Math.random()*500)+500),
@@ -26,6 +26,14 @@ class Routes extends Component {
             author,
             author_id,
             status: "queued",
+            priority: -1,
+            public: p,
+            commissioned: commission,
+            commission_accepted: false,
+            commission_notes: "",
+            commission_cost: 0,
+            commission_start: "",
+            commission_end: "",
             status_date: new Date().toDateString(),
             added_date: new Date().toDateString(),
             edited_date: false
@@ -81,6 +89,12 @@ class Routes extends Component {
                         priority: 3,
                         public: true,
                         deleted: false,
+                        commissioned: false,
+                        commission_accepted: false,
+                        commission_notes: "",
+                        commission_cost: 0,
+                        commission_start: "",
+                        commission_end: "",
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
                     },
@@ -94,6 +108,12 @@ class Routes extends Component {
                         priority: 2,
                         public: true,
                         deleted: false,
+                        commissioned: false,
+                        commission_accepted: false,
+                        commission_notes: "",
+                        commission_cost: 0,
+                        commission_start: "",
+                        commission_end: "",
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
                     },
@@ -107,6 +127,12 @@ class Routes extends Component {
                         priority: 1,
                         public: true,
                         deleted: false,
+                        commissioned: false,
+                        commission_accepted: false,
+                        commission_notes: "",
+                        commission_cost: 0,
+                        commission_start: "",
+                        commission_end: "",
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
                     },
@@ -120,6 +146,12 @@ class Routes extends Component {
                         priority: 0,
                         public: true,
                         deleted: false,
+                        commissioned: false,
+                        commission_accepted: false,
+                        commission_notes: "",
+                        commission_cost: 0,
+                        commission_start: "",
+                        commission_end: "",
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
                     },
@@ -133,6 +165,12 @@ class Routes extends Component {
                         priority: 2,
                         public: false,
                         deleted: false,
+                        commissioned: false,
+                        commission_accepted: false,
+                        commission_notes: "",
+                        commission_cost: 0,
+                        commission_start: "",
+                        commission_end: "",
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
                     },
@@ -146,6 +184,12 @@ class Routes extends Component {
                         priority: -1,
                         public: true,
                         deleted: false,
+                        commissioned: false,
+                        commission_accepted: false,
+                        commission_notes: "",
+                        commission_cost: 0,
+                        commission_start: "",
+                        commission_end: "",
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
                     },
@@ -159,6 +203,12 @@ class Routes extends Component {
                         priority: 2,
                         public: true,
                         deleted: true,
+                        commissioned: false,
+                        commission_accepted: false,
+                        commission_notes: "",
+                        commission_cost: 0,
+                        commission_start: "",
+                        commission_end: "",
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
                     },
@@ -172,8 +222,33 @@ class Routes extends Component {
                         priority: 2,
                         public: true,
                         deleted: false,
+                        commissioned: false,
+                        commission_accepted: false,
+                        commission_notes: "",
+                        commission_cost: 0,
+                        commission_start: "",
+                        commission_end: "",
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false
+                    },
+                    {
+                        id: 9,
+                        title: "Commissioned Project",
+                        description: "This is a test project. It is solely for testing purposes. A user should never see it.",
+                        author: "Alex Krantz",
+                        author_id: "google-oauth2|102493818408140086770",
+                        status: "working",
+                        priority: 2,
+                        public: true,
+                        deleted: false,
+                        commissioned: true,
+                        commission_accepted: true,
+                        commission_notes: "Some notes about a commission",
+                        commission_cost: 5,
+                        commission_start: "12/18/2018",
+                        commission_end: "1/5/2019",
+                        added_date: new Date().toLocaleDateString(),
+                        edited_date: false,
                     }
                 ]
             });
@@ -197,7 +272,8 @@ class Routes extends Component {
                                                                  adminView={this.state.adminView} loggedOut={this.state.adminLogout} {...props} />} />
                     <Route path="/requests" render={(props) => <Requests auth={auth} projects={this.state.projects} refreshing={this.state.refreshing}
                                                                          refresh={this.refreshProjects.bind(this)} update={this.updateProject.bind(this)}
-                                                                         delete={this.deleteProject.bind(this)} undo={this.undoDeleteProject.bind(this)} {...props}/>} />
+                                                                         delete={this.deleteProject.bind(this)} undo={this.undoDeleteProject.bind(this)}
+                                                                         create={this.createProject.bind(this)} {...props}/>} />
                     <Route path="/callback" render={(props) => <Callback {...props} />} />
                 </div>
             </BrowserRouter>

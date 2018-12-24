@@ -9,7 +9,8 @@ class AddProject extends Component {
             title: "",
             description: "",
             profile: "",
-            public: true
+            public: true,
+            commission: false
         }
     }
 
@@ -34,6 +35,10 @@ class AddProject extends Component {
                 this.setState({public: !this.state.public});
                 break;
 
+            case "commission":
+                this.setState({commission: !this.state.commission});
+                break;
+
             default:
                 break;
         }
@@ -41,7 +46,7 @@ class AddProject extends Component {
 
     submit() {
         let profile = JSON.parse(localStorage.getItem("profile"));
-        this.props.create(this.state.title, this.state.description, profile.name, profile.sub);
+        this.props.create(this.state.title, this.state.description, profile.name, profile.sub, this.state.public, this.state.commission);
         this.props.close();
     }
 
@@ -57,6 +62,9 @@ class AddProject extends Component {
                     </FormGroup>
                     <FormGroup label="Public" labelFor="public" inline={true}>
                         <Switch id="public" checked={this.state.public} onChange={this.handleUpdate.bind(this)}/>
+                    </FormGroup>
+                    <FormGroup label="Commission" labelFor="commission" inline={true}>
+                        <Switch id="commission" checked={this.state.commission} onChange={this.handleUpdate.bind(this)}/>
                     </FormGroup>
                     <FormGroup label="Author" labelFor="author">
                         <InputGroup id="author" value={this.state.profile} disabled={true}/>

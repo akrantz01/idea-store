@@ -10,11 +10,7 @@ body {
   font-family: sans-serif;
 }
 
-.priority-tag {
-  margin-left: 5px;
-}
-
-.private-tag {
+.stacked-tag {
   margin-left: 5px;
 }
 

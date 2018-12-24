@@ -13,6 +13,7 @@ class ProjectItem extends Component {
             deleteWarning: false,
             undoWarning: false,
             edit: false,
+            commission: false,
             editData: {
                 title: "",
                 description: "",
@@ -68,6 +69,18 @@ class ProjectItem extends Component {
         this.setState({editData: {...this.state.editData, priority}});
     };
 
+    toggleCommissionStatus = () => this.setState({commission: !this.state.commission});
+
+    handleEditRequest = () => {
+        // TODO: add API call to request an edit
+        console.log("Edit requested");
+    };
+
+    handleDeletionRequest = () => {
+        // TODO: add API call to request deletion
+        console.log("Deletion requested");
+    };
+
     render() {
         const style = {
             card: {
@@ -90,17 +103,22 @@ class ProjectItem extends Component {
                             { this.props.data.status === "queued" && <Tag intent="primary">Queued</Tag>}
                             { this.props.data.status === "ignored" && <Tag>Ignored</Tag>}
 
-                            { this.props.data.priority !== 0 && <Tag className="priority-tag">Priority: {this.props.data.priority}</Tag>}
-                            { !this.props.data.public && <Tag className="private-tag" intent="danger">Private</Tag> }
+                            { this.props.data.commissioned && this.props.location.pathname === "/requests" && (
+                                <Tooltip content="Click me to view the current status">
+                                    <Tag className="stacked-tag" intent="danger" interactive={true} onClick={this.toggleCommissionStatus.bind(this)}>Commissioned</Tag>
+                                </Tooltip>
+                            )}
+                            { this.props.data.priority !== 0 && <Tag className="stacked-tag">Priority: {this.props.data.priority}</Tag>}
+                            { !this.props.data.public && <Tag className="stacked-tag" intent="danger">Private</Tag> }
 
                         </Navbar.Group>
 
                         { this.props.authenticated && !this.props.data.deleted && (JSON.parse(localStorage.getItem("profile")).sub
                             === this.props.data.author_id || this.props.admin()) && (
                             <Navbar.Group align={Alignment.RIGHT}>
-                                <Button icon="edit" minimal={true} onClick={this.toggleEdit.bind(this)}/>
+                                <Button icon="edit" minimal={true} onClick={this.toggleEdit.bind(this)} disabled={this.props.data.commission_accepted}/>
                                 <Navbar.Divider/>
-                                <Button icon="delete" minimal={true} intent="danger" onClick={this.toggleDeleteWarning.bind(this)}/>
+                                <Button icon="delete" minimal={true} intent="danger" onClick={this.toggleDeleteWarning.bind(this)} disabled={this.props.data.commission_accepted}/>
                             </Navbar.Group>
                         )}
                         { this.props.authenticated && this.props.data.deleted && this.props.admin() && (
@@ -136,15 +154,17 @@ class ProjectItem extends Component {
                     <p>Are you sure you want to undo the deletion of a project?</p>
                 </Alert>
 
-                <Dialog icon="edit" onClose={this.toggleEdit.bind(this)} isOpen={this.state.edit} title="Edit Project" autoFocus={true} canEscapeKeyClose={true} canOutsideClickClose={true} enforceFocus={true} usePortal={true}>
+                <Dialog icon="edit" onClose={this.toggleEdit.bind(this)} isOpen={this.state.edit} title="Edit Project"
+                        autoFocus={true} canEscapeKeyClose={true} canOutsideClickClose={true} enforceFocus={true} usePortal={true}>
                     <div className={Classes.DIALOG_BODY}>
                         <FormGroup label="Project Title" labelFor="title">
                             <InputGroup id="title" placeholder={this.props.data.title} value={this.state.editData.title} onChange={this.handleTitleEdit.bind(this)}/>
                         </FormGroup>
                         <FormGroup label="Project Description" labelFor="description">
-                            <TextArea className="bp3-fill" value={this.state.editData.description} placeholder={this.props.data.description} onChange={this.handleDescriptionEdit.bind(this)}/>
+                            <TextArea className="bp3-fill" value={this.state.editData.description}
+                                      placeholder={this.props.data.description} onChange={this.handleDescriptionEdit.bind(this)}/>
                         </FormGroup>
-                        { this.props.authenticated && this.props.admin() && (
+                        { this.props.authenticated && this.props.admin() && !this.props.data.commissioned && (
                             <>
                                 <FormGroup label="Status:" labelFor="status" inline={true}>
                                     <HTMLSelect id="status" value={this.state.editData.status} onChange={this.handleStatusEdit.bind(this)}>
@@ -154,7 +174,8 @@ class ProjectItem extends Component {
                                     </HTMLSelect>
                                 </FormGroup>
                                 <FormGroup label="Priority:" labelFor="priority" inline={true}>
-                                    <NumericInput id="priority" name="ns-priority" minorStepSize={null} majorStepSize={null} min={0} max={3} value={this.state.editData.priority} onValueChange={this.handlePriorityEdit.bind(this)}/>
+                                    <NumericInput id="priority" name="ns-priority" minorStepSize={null} majorStepSize={null} min={0}
+                                                  max={3} value={this.state.editData.priority} onValueChange={this.handlePriorityEdit.bind(this)}/>
                                 </FormGroup>
                             </>
                         )}
@@ -162,7 +183,37 @@ class ProjectItem extends Component {
                     <div className={Classes.DIALOG_FOOTER}>
                         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
                             <Button onClick={this.toggleEdit.bind(this)} minimal={true} text="Cancel"/>
-                            <Button onClick={this.handleEdit.bind(this)} intent="success" text="Change"/>
+                            { !this.props.data.commission_accepted && <Button onClick={this.handleEdit.bind(this)} intent="success" text="Change"/> }
+                            { this.props.data.commission_accepted && <Button onClick={this.handleEditRequest.bind(this)} intent="success" text="Change"/> }
+                        </div>
+                    </div>
+                </Dialog>
+
+                <Dialog icon="dollar" onClose={this.toggleCommissionStatus.bind(this)} isOpen={this.state.commission} title="Commissioned Project Status"
+                        autoFocus={true} canEscapeKeyClose={true} canOutsideClickClose={true} enforceFocus={true} usePortal={true}>
+                    <div className={Classes.DIALOG_BODY}>
+                        <div className="bp3-text-large">Commission Accepted: {(this.props.data.commission_accepted) ?
+                            <span style={{color: "#0f9960"}}>Yes</span> : <span style={{color:"#db3737"}}>No</span>}</div>
+                        <br/>
+                        {this.props.data.commission_accepted && (
+                            <>
+                                <div className="bp3-ui-text">Planned Cost: ${this.props.data.commission_cost}</div>
+                                <div className="bp3-ui-text">Start Date: {this.props.data.commission_start}</div>
+                                <div className="bp3-ui-text">End Date: {this.props.data.commission_end}</div>
+                                <br/>
+                                <div className="bp3-ui-text">Notes:<br/><span className="bp3-running-text">{this.props.data.commission_notes}</span></div>
+                            </>
+                        )}
+                    </div>
+                    <div className={Classes.DIALOG_FOOTER}>
+                        <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+                            {this.props.data.commission_accepted && (
+                                <>
+                                    <Button onClick={this.handleDeletionRequest.bind(this)} intent="danger" text="Request Deletion"/>
+                                    <Button onClick={this.toggleEdit.bind(this)} intent="warning" text="Request Edit"/>
+                                </>
+                            )}
+                            <Button onClick={this.toggleCommissionStatus.bind(this)} intent="primary" text="Close" />
                         </div>
                     </div>
                 </Dialog>
