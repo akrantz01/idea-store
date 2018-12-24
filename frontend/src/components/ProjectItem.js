@@ -3,6 +3,7 @@ import {Card, Elevation, Navbar, Alignment,
     Tag, Tooltip, Position, Button, Collapse,
     Alert, Dialog, Classes, FormGroup,
     InputGroup, TextArea, HTMLSelect, NumericInput} from "@blueprintjs/core";
+import {DateRangeInput} from "@blueprintjs/datetime";
 
 class ProjectItem extends Component {
     constructor(props) {
@@ -14,11 +15,17 @@ class ProjectItem extends Component {
             undoWarning: false,
             edit: false,
             commission: false,
+            accept: false,
             editData: {
                 title: "",
                 description: "",
                 status: this.props.data.status,
                 priority: this.props.data.priority
+            },
+            commissionData: {
+                cost: 0,
+                timeframe: [null, null],
+                notes: ""
             }
         };
     }
@@ -52,7 +59,7 @@ class ProjectItem extends Component {
 
     handleEdit() {
         this.toggleEdit();
-        this.props.onEdit(this.props.data.id, this.state.editData.title, this.state.editData.description, this.state.editData.status, this.state.editData.priority);
+        this.props.onEdit(this.props.data.id, {...this.state.editData});
         this.setState({editData: {...this.state.editData, title: "", description: ""}});
     }
 
@@ -80,6 +87,40 @@ class ProjectItem extends Component {
         // TODO: add API call to request deletion
         console.log("Deletion requested");
     };
+
+    handleCommissionReject = () => {
+        this.props.onEdit(this.props.data.id, {commission_accepted: false});
+    };
+
+    handleCommissionAccept = () => {
+        this.props.onEdit(this.props.data.id, {
+            commission_accepted: true,
+            commission_cost: this.state.commissionData.cost,
+            commission_start: this.state.commissionData.timeframe[0].toLocaleDateString(),
+            commission_end: this.state.commissionData.timeframe[1].toLocaleDateString(),
+            commission_notes: this.state.commissionData.notes
+        });
+        this.toggleCommissionAccept();
+        this.setState({commissionData: {cost: 0, notes: "", timeframe: [null, null]}});
+    };
+
+    toggleCommissionAccept = () => {
+        this.setState({accept: !this.state.accept});
+        setTimeout(() => document.getElementById("cost").style.width = "75px", 25);
+    };
+
+    handleCommissionCostChange = (cost) => {
+        if (cost > 9999) cost = 9999;
+        else if (cost < 0) cost = 0;
+        if (isNaN(cost)) cost = 0;
+        this.setState({commissionData: {...this.state.commissionData, cost}});
+    };
+
+    handleCommissionTimeframeChange = (timeframe) => this.setState({commissionData: {...this.state.commissionData, timeframe}});
+
+    handleCommissionTimeframeClear = () => this.setState({commissionData: {...this.state.commissionData, timeframe: [null, null]}});
+
+    handleCommissionNotesChange = (event) => this.setState({commissionData: {...this.state.commissionData, notes: event.target.value}});
 
     render() {
         const style = {
@@ -114,11 +155,18 @@ class ProjectItem extends Component {
                         </Navbar.Group>
 
                         { this.props.authenticated && !this.props.data.deleted && (JSON.parse(localStorage.getItem("profile")).sub
-                            === this.props.data.author_id || this.props.admin()) && (
+                            === this.props.data.author_id || this.props.admin()) && this.props.adminView && (
                             <Navbar.Group align={Alignment.RIGHT}>
-                                <Button icon="edit" minimal={true} onClick={this.toggleEdit.bind(this)} disabled={this.props.data.commission_accepted}/>
+                                { this.props.adminView && this.props.location.pathname === "/requests" && (
+                                    <>
+                                        { !this.props.data.commission_accepted && <Button icon="tick-circle" minimal={true} intent="success" onClick={this.toggleCommissionAccept.bind(this)}/> }
+                                        { this.props.data.commission_accepted && <Button icon="ban-circle" minimal={true} intent="warning" onClick={this.handleCommissionReject.bind(this)}/> }
+                                        <Navbar.Divider/>
+                                    </>
+                                )}
+                                <Button icon="edit" minimal={true} onClick={this.toggleEdit.bind(this)} disabled={this.props.data.commission_accepted && !this.props.adminView}/>
                                 <Navbar.Divider/>
-                                <Button icon="delete" minimal={true} intent="danger" onClick={this.toggleDeleteWarning.bind(this)} disabled={this.props.data.commission_accepted}/>
+                                <Button icon="delete" minimal={true} intent="danger" onClick={this.toggleDeleteWarning.bind(this)} disabled={this.props.data.commission_accepted && !this.props.adminView}/>
                             </Navbar.Group>
                         )}
                         { this.props.authenticated && this.props.data.deleted && this.props.admin() && (
@@ -207,13 +255,38 @@ class ProjectItem extends Component {
                     </div>
                     <div className={Classes.DIALOG_FOOTER}>
                         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                            {this.props.data.commission_accepted && (
+                            {this.props.data.commission_accepted && !this.props.adminView && (
                                 <>
                                     <Button onClick={this.handleDeletionRequest.bind(this)} intent="danger" text="Request Deletion"/>
                                     <Button onClick={this.toggleEdit.bind(this)} intent="warning" text="Request Edit"/>
                                 </>
                             )}
                             <Button onClick={this.toggleCommissionStatus.bind(this)} intent="primary" text="Close" />
+                        </div>
+                    </div>
+                </Dialog>
+
+                <Dialog icon="tick-circle" onClose={this.toggleCommissionAccept.bind(this)} isOpen={this.state.accept} title="Accept Commissioned Project"
+                        autoFocus={true} canEscapeKeyClose={true} canOutsideClickClose={true} enforceFocus={true} usePortal={true}>
+                    <div className={Classes.DIALOG_BODY}>
+                        <FormGroup label="Cost" labelFor="cost" inline={true}>
+                            <NumericInput id="cost" name="ns-cost" leftIcon="dollar" min={0} max={9999} minorStepSize={null} majorStepSize={10}
+                                          value={this.state.commissionData.cost} onValueChange={this.handleCommissionCostChange.bind(this)}/>
+                        </FormGroup>
+                        <FormGroup label="Working Timeframe" labelFor="timeframe">
+                            <DateRangeInput id="timeframe" formatDate={date => date.toLocaleDateString()} parseDate={str => new Date(str)}
+                                            allowSingleDayRange={true} value={this.state.commissionData.timeframe} onChange={this.handleCommissionTimeframeChange.bind(this)}/>
+                            <Button icon="cross" minimal={true} onClick={this.handleCommissionTimeframeClear.bind(this)}/>
+                        </FormGroup>
+                        <FormGroup label="Notes" labelFor="notes">
+                            <TextArea className="bp3-fill" value={this.state.commissionData.notes}
+                                      placeholder="Notes about the project" onChange={this.handleCommissionNotesChange.bind(this)}/>
+                        </FormGroup>
+                    </div>
+                    <div className={Classes.DIALOG_FOOTER}>
+                        <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+                            <Button onClick={this.toggleCommissionAccept.bind(this)} text="Cancel" minimal={true} />
+                            <Button onClick={this.handleCommissionAccept.bind(this)} intent="success" text="Accept" />
                         </div>
                     </div>
                 </Dialog>

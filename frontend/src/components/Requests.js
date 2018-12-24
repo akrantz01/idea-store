@@ -18,7 +18,8 @@ class Requests extends Component {
 
     filterProjects = () => {
         const { sub } = JSON.parse(localStorage.getItem("profile"));
-        return this.props.projects.filter((p) => (sub === p.author_id && !p.deleted));
+        return this.props.projects.filter((p) => ((p.commissioned && this.props.adminView) ||
+            (sub === p.author_id && !p.deleted && !this.props.adminView)));
     };
 
     toggleAddProject = () => this.setState({add: !this.state.add});
@@ -44,8 +45,12 @@ class Requests extends Component {
                         commissioned project, click on the tag called <i>Commissioned</i>. <b>Please note:</b>
                         commissioned projects must follow <i>these guidelines</i> in order to be
                         considered and carried out.</p>
-                    <Button text="Commission Project" intent="success" icon="dollar" className="bp3-small" style={{ marginRight: "10px"}} onClick={this.toggleAddProject.bind(this)}/>
-                    <Button text="Request Project" intent="primary" icon="plus" className="bp3-small" style={{marginRight: "10px"}} onClick={this.toggleAddProject.bind(this)}/>
+                    { !this.props.adminView && (
+                        <>
+                            <Button text="Commission Project" intent="success" icon="dollar" className="bp3-small" style={{ marginRight: "10px"}} onClick={this.toggleAddProject.bind(this)}/>
+                            <Button text="Request Project" intent="primary" icon="plus" className="bp3-small" style={{marginRight: "10px"}} onClick={this.toggleAddProject.bind(this)}/>
+                        </>
+                    )}
                     <Button text="Refresh Projects" icon="refresh" className="bp3-small"
                             loading={this.props.refreshing} onClick={this.props.refresh} />
                 </Card>
@@ -53,7 +58,7 @@ class Requests extends Component {
                 { this.filterProjects().length > 0 && this.filterProjects().map((project, key) =>
                     <ProjectItem authenticated={isAuthenticated()} admin={isAdmin} data={project}
                                  key={key} onDelete={this.props.delete} onEdit={this.props.update}
-                                 onUndo={this.props.undo} location={this.props.location}/>
+                                 onUndo={this.props.undo} location={this.props.location} adminView={this.props.adminView}/>
                 )}
 
                 { this.filterProjects().length === 0 && (

@@ -245,7 +245,7 @@ class Home extends Component {
                     <>
                         {this.state.displayedProjects.length > 0 && this.state.displayedProjects.map((project, key) =>
                                 <ProjectItem authenticated={isAuthenticated()} admin={isAdmin} data={project} key={key} onDelete={this.props.delete}
-                                             onEdit={this.props.update} onUndo={this.props.undo} location={this.props.location}/>)}
+                                             onEdit={this.props.update} onUndo={this.props.undo} location={this.props.location} adminView={this.props.adminView}/>)}
 
                         {this.state.displayedProjects.length === 0 && (
                             <Card elevation={Elevation.ONE} style={style.dne_card}>
@@ -268,7 +268,7 @@ class Home extends Component {
                     <>
                         {this.state.displayedProjects.length > 0 && this.filterProjects(this.props.projects, true).map((project, key) =>
                             <ProjectItem authenticated={isAuthenticated()} admin={isAdmin} data={project} key={key} onDelete={this.props.delete}
-                                         onEdit={this.props.update} onUndo={this.props.undo} location={this.props.location}/>
+                                         onEdit={this.props.update} onUndo={this.props.undo} location={this.props.location} adminView={this.props.adminView}/>
                         )}
 
                         {this.filterProjects(this.props.projects, true).length === 0 && (
@@ -292,7 +292,7 @@ class Home extends Component {
                     <>
                         {this.state.displayedProjects.length > 0 && this.filterProjects(this.props.projects, false, true).map((project, key) =>
                             <ProjectItem authenticated={isAuthenticated()} admin={isAdmin} data={project} key={key} onDelete={this.props.delete}
-                                         onEdit={this.props.update} onUndo={this.props.undo}location={this.props.location}/>
+                                         onEdit={this.props.update} onUndo={this.props.undo}location={this.props.location} adminView={this.props.adminView}/>
                         )}
 
                         {this.filterProjects(this.props.projects, false, true).length === 0 && (

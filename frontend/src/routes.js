@@ -40,14 +40,13 @@ class Routes extends Component {
         }]})
     }
 
-    updateProject(index, title="", description="", status="", priority="") {
+    updateProject(index, updated) {
         // TODO: add API request
         this.setState({projects: this.state.projects.map((project) => {
             if (project.id === index) {
-                project.title = (title !== "") ? title : project.title;
-                project.description = (description !== "") ? description : project.description;
-                project.status = (status !== "") ? status : project.status;
-                project.priority = (priority !== "") ? priority : project.priority;
+                for (let key in updated) {
+                    if (project.hasOwnProperty(key)) project[key] = updated[key];
+                }
                 project.edited_date = new Date().toLocaleDateString();
             }
             return project;
@@ -242,11 +241,11 @@ class Routes extends Component {
                         public: true,
                         deleted: false,
                         commissioned: true,
-                        commission_accepted: true,
-                        commission_notes: "Some notes about a commission",
-                        commission_cost: 5,
-                        commission_start: "12/18/2018",
-                        commission_end: "1/5/2019",
+                        commission_accepted: false,
+                        commission_notes: "",
+                        commission_cost: 0,
+                        commission_start: "",
+                        commission_end: "",
                         added_date: new Date().toLocaleDateString(),
                         edited_date: false,
                     }
@@ -273,7 +272,7 @@ class Routes extends Component {
                     <Route path="/requests" render={(props) => <Requests auth={auth} projects={this.state.projects} refreshing={this.state.refreshing}
                                                                          refresh={this.refreshProjects.bind(this)} update={this.updateProject.bind(this)}
                                                                          delete={this.deleteProject.bind(this)} undo={this.undoDeleteProject.bind(this)}
-                                                                         create={this.createProject.bind(this)} {...props}/>} />
+                                                                         create={this.createProject.bind(this)} adminView={this.state.adminView} {...props}/>} />
                     <Route path="/callback" render={(props) => <Callback {...props} />} />
                 </div>
             </BrowserRouter>
