@@ -34,7 +34,6 @@ class Routes extends Component {
             commission_cost: 0,
             commission_start: "",
             commission_end: "",
-            status_date: new Date().toDateString(),
             added_date: new Date().toDateString(),
             edited_date: false
         }]})
