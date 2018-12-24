@@ -10,6 +10,14 @@ body {
   font-family: sans-serif;
 }
 
+.top-bar .bp3-dark {
+  background-color: #394b59;
+}
+
+.bp3-dark .bp3-navbar {
+  background-color: #30404d;
+}
+
 .stacked-tag {
   margin-left: 5px;
 }

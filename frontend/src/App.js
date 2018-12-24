@@ -73,7 +73,7 @@ class App extends React.Component {
 
         return (
             <div>
-                <Navbar>
+                <Navbar className="top-bar">
                     <Navbar.Group align={Alignment.LEFT}>
                         <Navbar.Heading>Projects Storage</Navbar.Heading>
                         <Navbar.Divider/>
