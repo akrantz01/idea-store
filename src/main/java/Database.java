@@ -62,7 +62,8 @@ public class Database {
      * @return the created project object
      */
     Project addProject(String title, String description, String author, String authorId, Boolean publicReq, Boolean commissioned) {
-        if (title == null || description == null) return null;
+        if (title == null || description == null || author == null ||
+                authorId == null || publicReq == null || commissioned == null) return null;
 
         Session session = factory.openSession();
         Transaction tx = null;
