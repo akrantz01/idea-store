@@ -32,17 +32,15 @@ public class Main {
         });
 
         path("/api", () -> {
-            get("/ideas", IdeaApi.getIdeas, json());
-            post("/ideas", IdeaApi.createIdea, json());
+            get("/projects", ProjectApi.getProjects, json());
+            post("/projects", ProjectApi.createProject, json());
 
-            path("/ideas", () -> {
-                get("/", IdeaApi.getIdeas, json());
-                post("/", IdeaApi.createIdea, json());
-                get("/find", IdeaApi.getFindIdea, json());
-                get("/filter", IdeaApi.getFilterIdea, json());
-                get("/:id", IdeaApi.getIdea, json());
-                put("/:id", IdeaApi.updateIdea, json());
-                delete("/:id", IdeaApi.deleteIdea, json());
+            path("/projects", () -> {
+                get("/", ProjectApi.getProjects, json());
+                post("/", ProjectApi.createProject, json());
+                get("/:id", ProjectApi.getProject, json());
+                put("/:id", ProjectApi.updateProject, json());
+                delete("/:id", ProjectApi.deleteProject, json());
             });
         });
 

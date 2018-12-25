@@ -4,16 +4,16 @@
     <session-factory>
         <!-- Connection Info -->
         <property name="hibernate.connection.url">
-            jdbc:mysql://172.17.0.3:3306/idea-store
+            jdbc:mysql://172.17.0.3:3306/project-store
         </property>
         <property name="hibernate.connection.username">
-            idea-store
+            project-store
         </property>
         <property name="hibernate.connection.password">
-            idea-store
+            project-store
         </property>
 
         <!-- XML Mappings -->
-        <mapping resource="Idea.hbm.xml"/>
+        <mapping resource="Project.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>

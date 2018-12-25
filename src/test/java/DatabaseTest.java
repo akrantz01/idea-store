@@ -8,10 +8,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,282 +21,213 @@ class DatabaseTest {
     private static Database db;
 
     /**
-     * Test adding an idea with title and description
+     * Test adding an project with all arguments
      */
     @Test
-    @DisplayName("addIdea: title and description")
-    void addIdea_TitleAndDescriptionGiven_ShouldReturnIdea() {
-        Idea idea = db.addIdea("test idea", "test idea description");
-        assertNotNull(idea);
+    @DisplayName("addProject: all arguments")
+    void addProject_ProperArgumentsGiven_ShouldReturnProject() {
+        Project project = db.addProject("test project", "test project description",
+                "test author", "google-oauth|0", true, false);
+        assertNotNull(project);
     }
 
     /**
-     * Test adding an idea with only title
+     * Test adding an project with only title null
      */
     @Test
-    @DisplayName("addIdea: only title")
-    void addIdea_OnlyTitle_ShouldReturnNull() {
-        Idea idea = db.addIdea("test idea", null);
-        assertNull(idea);
+    @DisplayName("addProject: only title null")
+    void addProject_OnlyTitleNull_ShouldReturnNull() {
+        Project project = db.addProject(null, "test project description",
+                "test author", "google-oauth|0", true, false);
+        assertNull(project);
     }
 
     /**
-     * Test adding an idea with only description
+     * Test adding an project with only description null
      */
     @Test
-    @DisplayName("addIdea: only description")
-    void addIdea_OnlyDescription_ShouldReturnNull() {
-        Idea idea = db.addIdea(null, "test idea description");
-        assertNull(idea);
+    @DisplayName("addProject: only description null")
+    void addProject_OnlyDescriptionNull_ShouldReturnNull() {
+        Project project = db.addProject("test project", null,
+                "test author", "google-oauth|0", true, false);
+        assertNull(project);
     }
 
     /**
-     * Test adding an idea with title and description null
+     * Test adding an project with only author null
      */
     @Test
-    @DisplayName("addIdea: both null")
-    void addIdea_TitleAndDescriptionNull_ShouldReturnNull() {
-        Idea idea = db.addIdea(null, null);
-        assertNull(idea);
+    @DisplayName("addProject: only author null")
+    void addProject_OnlyAuthorNull_ShouldReturnNull() {
+        Project project = db.addProject("test project", "test project description",
+                null, "google-oauth|0", true, false);
+        assertNull(project);
     }
 
     /**
-     * Test retrieving an idea with an existing id
+     * Test adding an project with only authorId null
      */
     @Test
-    @DisplayName("getIdea: valid id")
-    void getIdea_ExistingIDGiven_ShouldReturnIdea() {
-        Idea origIdea = db.addIdea("test idea", "test idea description");
-        Idea gotIdea = db.getIdea(origIdea.getId());
-
-        assertEquals(origIdea, gotIdea);
+    @DisplayName("addProject: only authorId null")
+    void addProject_OnlyAuthorIdNull_ShouldReturnNull() {
+        Project project = db.addProject("test project", "test project description",
+                "test author", null, true, false);
+        assertNull(project);
     }
 
     /**
-     * Test retrieving an idea with a non-existent id
+     * Test adding an project with only publicReq null
      */
     @Test
-    @DisplayName("getIdea: invalid id")
-    void getIdea_NonExistentID_ShouldReturnNull() {
-        Idea idea = db.getIdea(0);
-        assertNull(idea);
+    @DisplayName("addProject: only publicReq null")
+    void addProject_OnlyPublicReqNull_ShouldReturnNull() {
+        Project project = db.addProject("test project", "test project description",
+                "test author", "google-oauth|0", null, false);
+        assertNull(project);
     }
 
     /**
-     * Test updating an idea with an existing id
+     * Test adding an project with only commissioned null
      */
     @Test
-    @DisplayName("updateIdea: valid id with title and description")
-    void updateIdea_ExistingIDGiven_ShouldReturnIdea() {
-        Idea idea = db.addIdea("test idea", "test idea description");
-        String title = idea.getTitle();
-        String description = idea.getDescription();
-
-        idea = db.updateIdea(idea.getId(), "new title", "new description");
-        assertNotEquals(title, idea.getTitle());
-        assertNotEquals(description, idea.getDescription());
+    @DisplayName("addProject: only commissioned null")
+    void addProject_OnlyCommissionedNull_ShouldReturnNull() {
+        Project project = db.addProject("test project", "test project description",
+                "test author", "google-oauth|0", true, null);
+        assertNull(project);
     }
 
     /**
-     * Test updating an idea with a non-existent id
+     * Test adding an project with all arguments null
      */
     @Test
-    @DisplayName("updateIdea: invalid id with title and description")
-    void updateIdea_NonExistentIDGiven_ShouldReturnNull() {
-        Idea idea = db.updateIdea(0, "new title", "new description");
-        assertNull(idea);
+    @DisplayName("addProject: all arguments null")
+    void addProject_AllArgumentsNull_ShouldReturnNull() {
+        Project project = db.addProject(null, null, null,
+                null,null,null);
+        assertNull(project);
     }
 
     /**
-     * Test updating an idea with only title
+     * Test retrieving an project with an existing id
      */
     @Test
-    @DisplayName("updateIdea: valid id with title")
-    void updateIdea_OnlyTitleGiven_ShouldReturnIdea() {
-        Idea idea = db.addIdea("test idea", "test idea description");
-        String title = idea.getTitle();
+    @DisplayName("getProject: valid id")
+    void getProject_ExistingIDGiven_ShouldReturnProject() {
+        Project origProject = db.addProject("test project", "test project description",
+                "test author", "google-oauth|0", true, false);
+        Project gotProject = db.getProject(origProject.getId());
 
-        idea = db.updateIdea(idea.getId(), "title", null);
-        assertNotEquals(title, idea.getTitle());
+        assertEquals(origProject, gotProject);
     }
 
     /**
-     * Test updating an idea with only description
+     * Test retrieving an project with a non-existent id
      */
     @Test
-    @DisplayName("updateIdea: valid id with description")
-    void updateIdea_OnlyDescriptionGiven_ShouldReturnIdea() {
-        Idea idea = db.addIdea("test idea", "test idea description");
-        String description = idea.getDescription();
-
-        idea = db.updateIdea(idea.getId(), null, "new description");
-        assertNotEquals(description, idea.getDescription());
+    @DisplayName("getProject: invalid id")
+    void getProject_NonExistentID_ShouldReturnNull() {
+        Project project = db.getProject(0);
+        assertNull(project);
     }
 
     /**
-     * Test deleting an idea with existing id
+     * Test updating an project with an existing id
      */
     @Test
-    @DisplayName("deleteIdea: valid id")
-    void deleteIdea_ExistingIDGiven_ShouldReturnTrue() {
-        Idea origIdea = db.addIdea("test idea", "test idea description");
-        assertTrue(db.deleteIdea(origIdea.getId()));
+    @DisplayName("updateProject: valid id with title and description")
+    void updateProject_ExistingIDGiven_ShouldReturnProject() {
+        Project project = db.addProject("test project", "test project description",
+                "test author", "google-oauth|0", true, false);
+        String title = project.getTitle();
+        String description = project.getDescription();
+        String status = project.getStatus();
+        Integer priority = project.getPriority();
+        Boolean publicReq = project.getPublicReq();
+        Boolean deleted = project.getDeleted();
+        Boolean commissioned = project.getCommissioned();
+        Boolean c_accepted = project.getCommissionAccepted();
+        String c_notes = project.getCommissionNotes();
+        Double c_cost = project.getCommissionCost();
+        String c_start = project.getCommissionStart();
+        String c_end = project.getCommissionEnd();
+
+        project = db.updateProject(project.getId(), "new title", "new description", "new status",
+                0, false, true, true, true, "new notes", 8.2,
+                "new start", "new end");
+
+        assertNotEquals(title, project.getTitle());
+        assertNotEquals(description, project.getDescription());
+        assertNotEquals(status, project.getStatus());
+        assertNotEquals(priority, project.getPriority());
+        assertNotEquals(publicReq, project.getPublicReq());
+        assertNotEquals(deleted, project.getDeleted());
+        assertNotEquals(commissioned, project.getCommissioned());
+        assertNotEquals(c_accepted, project.getCommissionAccepted());
+        assertNotEquals(c_notes, project.getCommissionNotes());
+        assertNotEquals(c_cost, project.getCommissionCost());
+        assertNotEquals(c_start, project.getCommissionStart());
+        assertNotEquals(c_end, project.getCommissionEnd());
     }
 
     /**
-     * Test getting a list of ideas with ideas in the database
+     * Test updating an project with a non-existent id
      */
     @Test
-    @DisplayName("listIdeas: items in database")
-    void listIdeas_PopulatedDatabaseGiven_ShouldReturnArrayOf5Ideas() {
-        List<Idea> expected = new ArrayList<>();
-        for (int i = 0; i < 5; i++) expected.add(db.addIdea("idea" + i, "idea description" + i));
-        List<Idea> ideas = db.listIdeas();
-
-        assertEquals(expected.size(), ideas.size());
-        assertEquals(expected, ideas);
+    @DisplayName("updateProject: invalid id with title and description")
+    void updateProject_NonExistentIDGiven_ShouldReturnNull() {
+        Project project = db.updateProject(0, "new title", "new description", "new status",
+                0, false, true, true, true, "new notes", 8.2,
+                "new start", "new end");
+        assertNull(project);
     }
 
     /**
-     * Test getting a list of ideas with no ideas in the database
+     * Test deleting an project with existing id
      */
     @Test
-    @DisplayName("listIdeas: empty database")
-    void listIdeas_EmptyDatabaseGiven_ShouldReturnArrayOf0Ideas() {
-        List<Idea> expected = new ArrayList<>();
-        List<Idea> ideas = db.listIdeas();
-
-        assertEquals(expected.size(), ideas.size());
-        assertEquals(expected, ideas);
+    @DisplayName("deleteProject: valid id")
+    void deleteProject_ExistingIDGiven_ShouldReturnTrue() {
+        Project origProject = db.addProject("test project", "test project description",
+                "test author", "google-oauth|0", true, false);
+        assertTrue(db.deleteProject(origProject.getId()));
     }
 
     /**
-     * Test finding an idea by title with 3 ideas at the specified title
+     * Test deleting a project with invalid id
      */
     @Test
-    @DisplayName("findIdea: idea(s) with title")
-    void findIdea_ExistingItemsAtTitle_ShouldReturnArrayOf3Ideas() {
-        List<Idea> expected = new ArrayList<>();
-        for (int i = 0; i < 3; i++) expected.add(db.addIdea("filter" + i, "idea description"));
-        for (int i = 0; i < 2; i++) db.addIdea("idea" + i, "idea description");
-        List<Idea> found = db.findIdea("filter");
-
-        assertEquals(expected.size(), found.size());
-        assertEquals(expected, found);
+    @DisplayName("deleteProject: invalid id")
+    void deleteProject_InvalidIDGiven_ShouldReturnFalse() {
+        assertFalse(db.deleteProject(0));
     }
 
     /**
-     * Test finding an idea by title with 0 ideas at the specified title
+     * Test getting a list of projects with projects in the database
      */
     @Test
-    @DisplayName("findIdea: no idea(s) with title")
-    void findIdea_NonExistentItemsAtTitle_ShouldReturnArrayOf0Ideas() {
-        List<Idea> expected = new ArrayList<>();
-        for (int i = 0; i < 5; i++) db.addIdea("idea" + i, "idea description");
-        List<Idea> found = db.findIdea("filter");
+    @DisplayName("listProjects: items in database")
+    void listProjects_PopulatedDatabaseGiven_ShouldReturnArrayOf5Projects() {
+        List<Project> expected = new ArrayList<>();
+        for (int i = 0; i < 5; i++) expected.add(db.addProject("test project", "test project description",
+                "test author", "google-oauth|0", true, false));
+        List<Project> projects = db.listProjects();
 
-        assertEquals(expected.size(), found.size());
-        assertEquals(expected, found);
+        assertEquals(expected.size(), projects.size());
+        assertEquals(expected, projects);
     }
 
     /**
-     * Test inclusively filtering by time with a valid time range
-     * @throws InterruptedException from sleeping
+     * Test getting a list of projects with no projects in the database
      */
     @Test
-    @DisplayName("filterRange: valid range (inclusive)")
-    void filterRangeInclusive_ValidTimeRangeGiven_ShouldReturnArrayOf3Ideas() throws InterruptedException {
-        List<Idea> expected = new ArrayList<>();
-        Timestamp from = null;
-        Timestamp to = null;
+    @DisplayName("listProjects: empty database")
+    void listProjects_EmptyDatabaseGiven_ShouldReturnArrayOf0Projects() {
+        List<Project> expected = new ArrayList<>();
+        List<Project> projects = db.listProjects();
 
-        for (int i = 0; i < 5; i++) {
-            Idea idea = db.addIdea("test idea", "test idea description");
-
-            if (i < 3) {
-                expected.add(idea);
-
-                if (i == 0) from = idea.getCreated();
-                if (i == 2) to = idea.getCreated();
-            }
-            TimeUnit.SECONDS.sleep(1);
-        }
-        List<Idea> found = db.filterRange(from, to, true);
-
-        assertEquals(expected.size(), found.size());
-        assertEquals(expected, found);
-    }
-
-    /**
-     * Test inclusively filtering by time with an invalid time range
-     * @throws InterruptedException from sleeping
-     */
-    @Test
-    @DisplayName("filterRange: invalid range (inclusive)")
-    void filterRangeInclusive_InvalidTimeRangeGiven_ShouldReturnArrayOf0Ideas() throws InterruptedException {
-        List<Idea> expected = new ArrayList<>();
-        Timestamp from = null;
-        Timestamp to = null;
-
-        for (int i = 0; i < 5; i++) {
-            Idea idea = db.addIdea("test idea", "test idea description");
-            if (i == 0) from = idea.getCreated();
-            if (i == 2) to = idea.getCreated();
-            TimeUnit.SECONDS.sleep(1);
-        }
-        List<Idea> found = db.filterRange(to, from, true);
-
-        assertEquals(expected.size(), found.size());
-        assertEquals(expected, found);
-    }
-
-    /**
-     * Test exclusively filtering by time with a valid time range
-     * @throws InterruptedException from sleeping
-     */
-    @Test
-    @DisplayName("filterRange: valid range (exclusive)")
-    void filterRangeExclusive_ValidTimeRangeGiven_ShouldReturnArrayOf1Idea() throws InterruptedException {
-        List<Idea> expected = new ArrayList<>();
-        Timestamp from = null;
-        Timestamp to = null;
-
-        for (int i = 0; i < 5; i++) {
-            Idea idea = db.addIdea("test idea", "test idea description");
-
-            if (i == 0) from = idea.getCreated();
-            if (i == 1) expected.add(idea);
-            if (i == 2) to = idea.getCreated();
-
-            TimeUnit.SECONDS.sleep(1);
-        }
-        List<Idea> found = db.filterRange(from, to, false);
-
-        assertEquals(expected.size(), found.size());
-        assertEquals(expected, found);
-    }
-
-    /**
-     * Test exclusively filtering by time with an invalid time range
-     * @throws InterruptedException from sleeping
-     */
-    @Test
-    @DisplayName("filterRange: invalid range (exclusive)")
-    void filterRangeExclusive_InvalidTimeRangeGiven_ShouldReturnArrayOf0Ideas() throws InterruptedException {
-        List<Idea> expected = new ArrayList<>();
-        Timestamp from = null;
-        Timestamp to = null;
-
-        for (int i = 0; i < 5; i++) {
-            Idea idea = db.addIdea("test idea", "test idea description");
-            if (i == 0) from = idea.getCreated();
-            if (i == 2) to = idea.getCreated();
-            TimeUnit.SECONDS.sleep(1);
-        }
-        List<Idea> found = db.filterRange(to, from, false);
-
-        assertEquals(expected.size(), found.size());
-        assertEquals(expected, found);
+        assertEquals(expected.size(), projects.size());
+        assertEquals(expected, projects);
     }
 
     /**
@@ -326,40 +255,14 @@ class DatabaseTest {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            session.createQuery("DELETE FROM Idea").executeUpdate();
-            session.createSQLQuery("ALTER TABLE ideas AUTO_INCREMENT = 1").executeUpdate();
+            session.createQuery("DELETE FROM Project").executeUpdate();
+            session.createSQLQuery("ALTER TABLE projects AUTO_INCREMENT = 1").executeUpdate();
             tx.commit();
         } catch (HibernateException e) {
             if (tx != null) tx.rollback();
             e.printStackTrace();
         } finally {
             session.close();
-        }
-    }
-
-    /**
-     * Display all fields of an idea
-     * @param idea idea to display
-     */
-    void describeIdeas(Idea idea) {
-        System.out.println(idea + ":");
-        System.out.println("\tID: " + idea.getId());
-        System.out.println("\tCreated: " + idea.getCreated());
-        System.out.println("\tTitle: " + idea.getTitle());
-        System.out.println("\tDescription: " + idea.getDescription());
-    }
-
-    /**
-     * Display all fields of a list of ideas
-     * @param ideas list of ideas to display
-     */
-    void describeIdeas(List<Idea> ideas) {
-        for (Idea idea: ideas) {
-            System.out.println(idea + ":");
-            System.out.println("\tID: " + idea.getId());
-            System.out.println("\tCreated: " + idea.getCreated());
-            System.out.println("\tTitle: " + idea.getTitle());
-            System.out.println("\tDescription: " + idea.getDescription());
         }
     }
 }
