@@ -139,11 +139,11 @@ class ProjectApiTest {
     }
 
     /**
-     * Test updating project with valid id, title and description
+     * Test updating project with valid id and proper arguments
      */
     @Test
-    @DisplayName("PUT /api/projects/%id: valid id with title & description")
-    void updateProject_ValidIDTitleAndDescriptionGiven_ShouldReturnProject() {
+    @DisplayName("PUT /api/projects/%id: valid id with proper arguments")
+    void putProject_ValidIDAndProperArgumentsGiven_ShouldReturnProject() {
         Project p = Main.db.addProject("test project", "test project description",
                 "test author", "google-oauth|0", true, false);
 
@@ -161,7 +161,7 @@ class ProjectApiTest {
      */
     @Test
     @DisplayName("PUT /api/projects/%id: valid id with title")
-    void updateProject_ValidIDAndTitleGiven_ShouldReturnProject() {
+    void putProject_ValidIDAndTitleGiven_ShouldReturnProject() {
         Project p = Main.db.addProject("test project", "test project description",
                 "test author", "google-oauth|0", true, false);
 
@@ -179,7 +179,7 @@ class ProjectApiTest {
      */
     @Test
     @DisplayName("PUT /api/projects/%id: valid id with description")
-    void updateProject_ValidIDAndDescriptionGiven_ShouldReturnProject() {
+    void putProject_ValidIDAndDescriptionGiven_ShouldReturnProject() {
         Project p = Main.db.addProject("test project", "test project description",
                 "test author", "google-oauth|0", true, false);
 
@@ -197,7 +197,7 @@ class ProjectApiTest {
      */
     @Test
     @DisplayName("PUT /api/projects/%id: valid id only")
-    void updateProject_ValidIDGiven_ShouldReturnProject() {
+    void putProject_ValidIDGiven_ShouldReturnProject() {
         Project p = Main.db.addProject("test project", "test project description",
                 "test author", "google-oauth|0", true, false);
 
@@ -211,26 +211,11 @@ class ProjectApiTest {
     }
 
     /**
-     * Test updating project with invalid id, title and description
-     */
-    @Test
-    @DisplayName("PUT /api/projects/%id: invalid id with title & description")
-    void updateProject_InvalidIDTitleAndDescriptionGiven_ShouldReturnErrorMessage() {
-        TestResponse res = TestResponse.request("PUT", "/api/projects/0");
-        assertNotNull(res);
-        assertEquals(400, res.status);
-
-        Map<String, String> json = res.json();
-        assertEquals("error", json.get("status"));
-        assertEquals("project with id '0' does not exist", json.get("reason"));
-    }
-
-    /**
      * Test updating project with invalid id and title
      */
     @Test
     @DisplayName("PUT /api/projects/%id: invalid id with title")
-    void updateProject_InvalidIDAndTitleGiven_ShouldReturnErrorMessage() {
+    void putProject_InvalidIDAndTitleGiven_ShouldReturnErrorMessage() {
         TestResponse res = TestResponse.request("PUT", "/api/projects/0");
         assertNotNull(res);
         assertEquals(400, res.status);
@@ -245,7 +230,7 @@ class ProjectApiTest {
      */
     @Test
     @DisplayName("PUT /api/projects/%id: invalid id with description")
-    void updateProject_InvalidIDAndDescriptionGiven_ShouldReturnErrorMessage() {
+    void putProject_InvalidIDAndDescriptionGiven_ShouldReturnErrorMessage() {
         TestResponse res = TestResponse.request("PUT", "/api/projects/0");
         assertNotNull(res);
         assertEquals(400, res.status);
@@ -260,7 +245,7 @@ class ProjectApiTest {
      */
     @Test
     @DisplayName("PUT /api/projects/%id: invalid id")
-    void updateProject_InvalidIDGiven_ShouldReturnErrorMessage() {
+    void putProject_InvalidIDGiven_ShouldReturnErrorMessage() {
         TestResponse res = TestResponse.request("PUT", "/api/projects/0");
         assertNotNull(res);
         assertEquals(400, res.status);
