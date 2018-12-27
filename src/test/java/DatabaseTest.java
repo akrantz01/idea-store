@@ -171,11 +171,23 @@ class DatabaseTest {
     }
 
     /**
-     * Test updating an project with a non-existent id
+     * Test updating a project with a non-existent id
      */
     @Test
-    @DisplayName("updateProject: invalid id with title and description")
+    @DisplayName("updateProject: invalid id only")
     void updateProject_NonExistentIDGiven_ShouldReturnNull() {
+        Project project = db.updateProject(0, null, null, null,
+                null, null, null, null, null,
+                null, null, null, null);
+        assertNull(project);
+    }
+
+    /**
+     * Test updating an project with a non-existent id and proper arguments
+     */
+    @Test
+    @DisplayName("updateProject: invalid id with proper arguments")
+    void updateProject_NonExistentIDAndProperArgumentsGiven_ShouldReturnNull() {
         Project project = db.updateProject(0, "new title", "new description", "new status",
                 0, false, true, true, true, "new notes", 8.2,
                 "new start", "new end");

@@ -22,7 +22,7 @@ class ProjectApiTest {
     @Test
     @DisplayName("GET /api/projects: normal request")
     void getProjects_NormalRequestGiven_ShouldReturnArrayOf3Projects() {
-        for (int i = 0; i < 5; i++) Main.db.addProject("test project", "test project description",
+        for (int i = 0; i < 5; i++) Main.db.addProject("test project " + i, "test project description",
                 "test author", "google-oauth|0", true, false);
 
         TestResponse res = TestResponse.request("GET", "/api/projects");
@@ -71,18 +71,24 @@ class ProjectApiTest {
     }
 
     /**
-     * Test creating project with test and description
+     * Test creating project with proper arguments
      */
     @Test
-    @DisplayName("POST /api/projects: title and description")
+    @DisplayName("POST /api/projects: proper arguments")
     void postProject_TitleAndDescriptionGiven_ShouldReturnCreated() {
-        TestResponse res = TestResponse.request("POST", "/api/projects?title=test%20title&description=test%20description");
+        TestResponse res = TestResponse.request("POST", "/api/projects?" +
+                "title=test%20project&description=test%20project%20description&author=test%20user&" +
+                "authorId=google-oauth2%7C0&public=true&commissioned=false");
         assertNotNull(res);
         assertEquals(200, res.status);
 
         Map<String, String> json = res.json();
-        assertEquals("test title", json.get("title"));
-        assertEquals("test description", json.get("description"));
+        assertEquals("test project", json.get("title"));
+        assertEquals("test project description", json.get("description"));
+        assertEquals("test user", json.get("author"));
+        assertEquals("google-oauth2|0", json.get("authorId"));
+        assertEquals(true, json.get("publicReq"));
+        assertEquals(false, json.get("commissioned"));
     }
 
     /**
@@ -91,13 +97,15 @@ class ProjectApiTest {
     @Test
     @DisplayName("POST /api/projects: only title")
     void postProject_OnlyTitleGiven_ShouldReturnErrorMessage() {
-        TestResponse res = TestResponse.request("POST", "/api/projects?title=test%20title");
+        TestResponse res = TestResponse.request("POST", "/api/projects?" +
+                "title=test%20title");
         assertNotNull(res);
         assertEquals(400, res.status);
 
         Map<String, String> json = res.json();
         assertEquals("error", json.get("status"));
-        assertEquals("expected query parameters 'title' and 'description', got title='test title' and description='null'", json.get("reason"));
+        assertEquals("expected query parameters 'title' and 'description', got " +
+                "title='test title' and description='null'", json.get("reason"));
     }
 
     /**
@@ -251,7 +259,7 @@ class ProjectApiTest {
      * Test updating project with invalid id
      */
     @Test
-    @DisplayName("PUT /api/projects/%id: invalid id only")
+    @DisplayName("PUT /api/projects/%id: invalid id")
     void updateProject_InvalidIDGiven_ShouldReturnErrorMessage() {
         TestResponse res = TestResponse.request("PUT", "/api/projects/0");
         assertNotNull(res);

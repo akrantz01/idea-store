@@ -45,7 +45,8 @@ class ProjectApi {
         if (project != null) return project;
 
         response.status(HttpStatus.BAD_REQUEST_400);
-        return new ResponseError(HttpStatus.BAD_REQUEST_400, "expected query parameters 'title' and 'description', got title='%s' and description='%s'", request.queryParams("title"), request.queryParams("description"));
+        return new ResponseError(HttpStatus.BAD_REQUEST_400, "expected query parameters 'title' and 'description', got " +
+                "title='%s' and description='%s'", request.queryParams("title"), request.queryParams("description"));
     };
 
     /**
@@ -60,11 +61,27 @@ class ProjectApi {
             return new ResponseError(HttpStatus.BAD_REQUEST_400, "project with id '%s' does not exist", request.params("id"));
         }
 
+        Boolean publicReq, deleted, commissioned, commissionAccepted;
+        if (request.queryParams("public") == null) publicReq = null;
+        else publicReq = Boolean.valueOf(request.queryParams("public"));
+        if (request.queryParams("deleted") == null) deleted = null;
+        else deleted = Boolean.valueOf(request.queryParams("deleted"));
+        if (request.queryParams("commissioned") == null) commissioned = null;
+        else commissioned = Boolean.valueOf(request.queryParams("commissioned"));
+        if (request.queryParams("commissionAccepted") == null) commissionAccepted = null;
+        else commissionAccepted = Boolean.valueOf(request.queryParams("commissionAccepted"));
+
+        Integer priority;
+        if (request.queryParams("priority") == null) priority = null;
+        else priority = Integer.valueOf(request.queryParams("priority"));
+
+        Double commissionCost;
+        if (request.queryParams("commissionCost") == null) commissionCost = null;
+        else commissionCost = Double.valueOf(request.queryParams("commissionCost"));
+
         Project project = Main.db.updateProject(id, request.queryParams("title"), request.queryParams("description"),
-                request.queryParams("status"), Integer.valueOf(request.queryParams("priority")), 
-                Boolean.valueOf(request.queryParams("public")), Boolean.valueOf(request.queryParams("deleted")),
-                Boolean.valueOf(request.queryParams("commissioned")), Boolean.valueOf(request.queryParams("commissionAccepted")),
-                request.queryParams("commissionNotes"), Double.parseDouble(request.queryParams("commissionCost")),
+                request.queryParams("status"), priority, publicReq, deleted, commissioned,
+                commissionAccepted, request.queryParams("commissionNotes"), commissionCost,
                 request.queryParams("commissionStart"), request.queryParams("commissionEnd"));
         if (project != null) return project;
 
