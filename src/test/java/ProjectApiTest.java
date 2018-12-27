@@ -115,13 +115,25 @@ class ProjectApiTest {
         Project p = Main.db.addProject("test project", "test project description",
                 "test author", "google-oauth|0", true, false);
 
-        TestResponse res = TestResponse.request("PUT", "/api/projects/" + p.getId() + "?title=new%20title&description=new%20description");
+        TestResponse res = TestResponse.request("PUT", "/api/projects/" + p.getId() + "?" +
+                "title=new%20title&description=new%20description&status=working&priority=2&" +
+                "public=false&deleted=true&commissioned=true&commissionAccepted=true&" +
+                "commissionNotes=abcdefg&commissionStart=12%2F12%2F12&commissionEnd=12%2F12%2F12");
         assertNotNull(res);
         assertEquals(200, res.status);
 
         Map<String, String> json = res.json();
         assertEquals("new title", json.get("title"));
         assertEquals("new description", json.get("description"));
+        assertEquals("working", json.get("status"));
+        assertEquals(2.0, json.get("priority"));
+        assertEquals(false, json.get("publicReq"));
+        assertEquals(true, json.get("deleted"));
+        assertEquals(true, json.get("commissioned"));
+        assertEquals(true, json.get("commissionAccepted"));
+        assertEquals("abcdefg", json.get("commissionNotes"));
+        assertEquals("12/12/12", json.get("commissionStart"));
+        assertEquals("12/12/12", json.get("commissionEnd"));
     }
 
     /**
