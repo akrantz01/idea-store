@@ -44,6 +44,7 @@ public class Main {
                 get("/:id", ProjectApi.getProject);
                 put("/:id", ProjectApi.updateProject);
                 delete("/:id", ProjectApi.deleteProject);
+                options("/:id", ProjectApi.optionsProject);
             });
         });
 

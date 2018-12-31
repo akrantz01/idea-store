@@ -240,4 +240,28 @@ public class Database {
 
         return projects;
     }
+
+    /**
+     * Check if a user exists
+     * @return boolean (true: exists, false: not)
+     */
+    boolean projectExists(Integer id) {
+        Session session = factory.openSession();
+        Transaction tx = null;
+        boolean exists = false;
+
+        try {
+            tx = session.beginTransaction();
+            Project p = session.get(Project.class, id);
+            if (p != null) exists = true;
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+
+        return exists;
+    }
 }

@@ -182,4 +182,19 @@ class ProjectApi {
         response.status(HttpStatus.BAD_REQUEST_400);
         return Main.gson.toJson(new StandardResponse(StatusResponse.ERROR, String.format("project with id '%s' does not exist", id)));
     };
+
+    /**
+     * Options request for checking if user exists
+     */
+    static Route optionsProject = (Request request, Response response) -> {
+        Integer id;
+        try {
+            id = Integer.parseInt(request.params("id"));
+        } catch (NumberFormatException e) {
+            response.status(HttpStatus.BAD_REQUEST_400);
+            return Main.gson.toJson(new StandardResponse(StatusResponse.ERROR, String.format("project id '%s' is invalid", request.params("id"))));
+        }
+
+        return Main.gson.toJson(new StandardResponse(StatusResponse.SUCCESS, (Main.db.projectExists(id) ? "user exists" : "user does not exist")));
+    };
 }
