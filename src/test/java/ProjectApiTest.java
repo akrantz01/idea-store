@@ -44,7 +44,7 @@ class ProjectApiTest {
             assertEquals("google-oauth2|0", j.get("authorId").getAsString());
             assertEquals("queued", j.get("status").getAsString());
             assertEquals(-1, j.get("priority").getAsInt());
-            assertTrue(j.get("publicReq").getAsBoolean());
+            assertTrue(j.get("public").getAsBoolean());
             assertFalse(j.get("deleted").getAsBoolean());
             assertFalse(j.get("commissioned").getAsBoolean());
             assertFalse(j.get("commissionAccepted").getAsBoolean());
@@ -81,7 +81,7 @@ class ProjectApiTest {
         assertEquals("google-oauth2|0", json.get("authorId").getAsString());
         assertEquals("queued", json.get("status").getAsString());
         assertEquals(-1, json.get("priority").getAsInt());
-        assertTrue(json.get("publicReq").getAsBoolean());
+        assertTrue(json.get("public").getAsBoolean());
         assertFalse(json.get("deleted").getAsBoolean());
         assertFalse(json.get("commissioned").getAsBoolean());
         assertFalse(json.get("commissionAccepted").getAsBoolean());
@@ -138,7 +138,7 @@ class ProjectApiTest {
         jo.addProperty("authorId", "google-oauth2|0");
         jo.addProperty("status", "working");
         jo.addProperty("priority", -1);
-        jo.addProperty("publicReq", true);
+        jo.addProperty("public", true);
         jo.addProperty("deleted", false);
         jo.addProperty("commissioned", false);
         jo.addProperty("commissionAccepted", false);
@@ -163,7 +163,7 @@ class ProjectApiTest {
         assertEquals("google-oauth2|0", json.get("authorId").getAsString());
         assertEquals("working", json.get("status").getAsString());
         assertEquals(-1, json.get("priority").getAsInt());
-        assertTrue(json.get("publicReq").getAsBoolean());
+        assertTrue(json.get("public").getAsBoolean());
         assertFalse(json.get("deleted").getAsBoolean());
         assertFalse(json.get("commissioned").getAsBoolean());
         assertFalse(json.get("commissionAccepted").getAsBoolean());
@@ -221,7 +221,7 @@ class ProjectApiTest {
         jo.addProperty("description", "new description");
         jo.addProperty("status", "in progress");
         jo.addProperty("priority", 2);
-        jo.addProperty("publicReq", false);
+        jo.addProperty("public", false);
         jo.addProperty("deleted", true);
         jo.addProperty("commissioned", true);
         jo.addProperty("commissionAccepted", true);
@@ -242,7 +242,7 @@ class ProjectApiTest {
         assertEquals("new description", json.get("description").getAsString());
         assertEquals("in progress", json.get("status").getAsString());
         assertEquals(2, json.get("priority").getAsInt());
-        assertFalse(json.get("publicReq").getAsBoolean());
+        assertFalse(json.get("public").getAsBoolean());
         assertTrue(json.get("deleted").getAsBoolean());
         assertTrue(json.get("commissioned").getAsBoolean());
         assertTrue(json.get("commissionAccepted").getAsBoolean());
@@ -275,7 +275,7 @@ class ProjectApiTest {
         assertEquals("google-oauth2|0", json.get("authorId").getAsString());
         assertEquals("queued", json.get("status").getAsString());
         assertEquals(-1, json.get("priority").getAsInt());
-        assertTrue(json.get("publicReq").getAsBoolean());
+        assertTrue(json.get("public").getAsBoolean());
         assertFalse(json.get("deleted").getAsBoolean());
         assertFalse(json.get("commissioned").getAsBoolean());
         assertFalse(json.get("commissionAccepted").getAsBoolean());
