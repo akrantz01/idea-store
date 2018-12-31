@@ -20,6 +20,8 @@ class ProjectApi {
      */
     static Route getProjects = (Request request, Response response) -> {
         response.header("Access-Control-Allow-Origin", "*");
+        response.type("application/json");
+
         JsonElement element = Main.gson.toJsonTree(Main.db.listProjects(), new TypeToken<List<Project>>(){}.getType());
 
         if (!element.isJsonArray()) {
@@ -34,6 +36,9 @@ class ProjectApi {
      * Get request for a specific Project
      */
     static Route getProject = (Request request, Response response) -> {
+        response.header("Access-Control-Allow-Origin", "*");
+        response.type("application/json");
+
         Integer id;
         try {
             id = Integer.parseInt(request.params("id"));
@@ -53,6 +58,7 @@ class ProjectApi {
      * Post request for creating an project
      */
     static Route createProject = (Request request, Response response) -> {
+        response.header("Access-Control-Allow-Origin", "*");
         response.type("application/json");
 
         Project project;
@@ -75,6 +81,9 @@ class ProjectApi {
      * Put request for updating an project
      */
     static Route updateProject = (Request request, Response response) -> {
+        response.header("Access-Control-Allow-Origin", "*");
+        response.type("application/json");
+
         Integer id;
         try {
             id = Integer.parseInt(request.params("id"));
@@ -170,6 +179,9 @@ class ProjectApi {
      * Delete request for deleting an project
      */
     static Route deleteProject = (Request request, Response response) -> {
+        response.header("Access-Control-Allow-Origin", "*");
+        response.type("application/json");
+
         Integer id;
         try {
             id = Integer.parseInt(request.params("id"));
@@ -187,6 +199,9 @@ class ProjectApi {
      * Options request for checking if user exists
      */
     static Route optionsProject = (Request request, Response response) -> {
+        response.header("Access-Control-Allow-Origin", "*");
+        response.type("application/json");
+
         Integer id;
         try {
             id = Integer.parseInt(request.params("id"));
