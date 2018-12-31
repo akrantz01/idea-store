@@ -20,6 +20,7 @@ class ProjectApi {
      */
     static Route getProjects = (Request request, Response response) -> {
         response.header("Access-Control-Allow-Origin", "*");
+        response.header("Access-Control-Allow-Methods", "GET");
         response.type("application/json");
 
         JsonElement element = Main.gson.toJsonTree(Main.db.listProjects(), new TypeToken<List<Project>>(){}.getType());
@@ -37,6 +38,7 @@ class ProjectApi {
      */
     static Route getProject = (Request request, Response response) -> {
         response.header("Access-Control-Allow-Origin", "*");
+        response.header("Access-Control-Allow-Methods", "GET");
         response.type("application/json");
 
         Integer id;
@@ -59,6 +61,7 @@ class ProjectApi {
      */
     static Route createProject = (Request request, Response response) -> {
         response.header("Access-Control-Allow-Origin", "*");
+        response.header("Access-Control-Allow-Methods", "POST");
         response.type("application/json");
 
         Project project;
@@ -82,6 +85,7 @@ class ProjectApi {
      */
     static Route updateProject = (Request request, Response response) -> {
         response.header("Access-Control-Allow-Origin", "*");
+        response.header("Access-Control-Allow-Methods", "PUT");
         response.type("application/json");
 
         Integer id;
@@ -180,6 +184,7 @@ class ProjectApi {
      */
     static Route deleteProject = (Request request, Response response) -> {
         response.header("Access-Control-Allow-Origin", "*");
+        response.header("Access-Control-Allow-Methods", "DELETE");
         response.type("application/json");
 
         Integer id;
@@ -193,23 +198,5 @@ class ProjectApi {
 
         response.status(HttpStatus.BAD_REQUEST_400);
         return Main.gson.toJson(new StandardResponse(StatusResponse.ERROR, String.format("project with id '%s' does not exist", id)));
-    };
-
-    /**
-     * Options request for checking if user exists
-     */
-    static Route optionsProject = (Request request, Response response) -> {
-        response.header("Access-Control-Allow-Origin", "*");
-        response.type("application/json");
-
-        Integer id;
-        try {
-            id = Integer.parseInt(request.params("id"));
-        } catch (NumberFormatException e) {
-            response.status(HttpStatus.BAD_REQUEST_400);
-            return Main.gson.toJson(new StandardResponse(StatusResponse.ERROR, String.format("project id '%s' is invalid", request.params("id"))));
-        }
-
-        return Main.gson.toJson(new StandardResponse(StatusResponse.SUCCESS, (Main.db.projectExists(id) ? "project exists" : "project does not exist")));
     };
 }
