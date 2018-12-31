@@ -369,6 +369,54 @@ class ProjectApiTest {
     }
 
     /**
+     * Test options project with valid id
+     */
+    @Test
+    @DisplayName("OPTIONS /api/projects/%id: valid id")
+    void optionsProject_ValidIDGiven_ShouldReturnExists() {
+        Project p = Main.db.addProject("test project", "test project description",
+                "test author", "google-oauth|0", true, false);
+
+        TestResponse res = TestResponse.request("OPTIONS", "/api/projects/" + p.getId(), null);
+        assertNotNull(res);
+        assertEquals(200, res.status);
+
+        StandardResponse stdres = res.standardResponse();
+        assertEquals(StatusResponse.SUCCESS, stdres.getStatus());
+        assertEquals("project exists", stdres.getMessage());
+    }
+
+    /**
+     * Test options with non-existent id
+     */
+    @Test
+    @DisplayName("OPTIONS /api/projects/%id: non-existent id")
+    void optionsProject_NonExistentIDGiven_shouldReturnNotExists() {
+        TestResponse res = TestResponse.request("OPTIONS", "/api/projects/0", null);
+        assertNotNull(res);
+        assertEquals(200, res.status);
+
+        StandardResponse stdres = res.standardResponse();
+        assertEquals(StatusResponse.SUCCESS, stdres.getStatus());
+        assertEquals("project does not exist", stdres.getMessage());
+    }
+
+    /**
+     * Test options project with invalid id
+     */
+    @Test
+    @DisplayName("OPTIONS /api/projects/%id: invalid id")
+    void optionsProject_InvalidIDGiven_ShouldReturnError() {
+        TestResponse res = TestResponse.request("OPTIONS", "/api/projects/abc", null);
+        assertNotNull(res);
+        assertEquals(400, res.status);
+
+        StandardResponse stdres = res.standardResponse();
+        assertEquals(StatusResponse.ERROR, stdres.getStatus());
+        assertEquals("project id 'abc' is invalid", stdres.getMessage());
+    }
+
+    /**
      * Start the webserver for testing
      */
     @BeforeAll

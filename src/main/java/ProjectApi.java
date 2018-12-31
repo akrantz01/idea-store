@@ -195,6 +195,6 @@ class ProjectApi {
             return Main.gson.toJson(new StandardResponse(StatusResponse.ERROR, String.format("project id '%s' is invalid", request.params("id"))));
         }
 
-        return Main.gson.toJson(new StandardResponse(StatusResponse.SUCCESS, (Main.db.projectExists(id) ? "user exists" : "user does not exist")));
+        return Main.gson.toJson(new StandardResponse(StatusResponse.SUCCESS, (Main.db.projectExists(id) ? "project exists" : "project does not exist")));
     };
 }
