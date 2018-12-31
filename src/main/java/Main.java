@@ -39,8 +39,6 @@ public class Main {
             post("/projects", ProjectApi.createProject);
 
             path("/projects", () -> {
-                get("/", ProjectApi.getProjects);
-                post("/", ProjectApi.createProject);
                 get("/:id", ProjectApi.getProject);
                 put("/:id", ProjectApi.updateProject);
                 delete("/:id", ProjectApi.deleteProject);
