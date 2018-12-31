@@ -47,9 +47,10 @@ public class Main {
             });
         });
 
+        // Redirect to SPA
         get("*", (request, response) -> {
-            response.status(HttpStatus.NOT_FOUND_404);
-            return "Page does not exist";
+            response.redirect("index.html");
+            return null;
         });
     }
 
