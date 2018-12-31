@@ -8,7 +8,7 @@ public class ProjectDeserializer implements JsonDeserializer<Project> {
         JsonObject jo = json.getAsJsonObject();
 
         if (jo.get("id") == null || jo.get("title") == null || jo.get("description") == null || jo.get("author") == null 
-                || jo.get("authorId") == null || jo.get("status") == null || jo.get("priority") == null || jo.get("publicReq") == null 
+                || jo.get("authorId") == null || jo.get("status") == null || jo.get("priority") == null || jo.get("public") == null
                 || jo.get("deleted") == null || jo.get("commissioned") == null || jo.get("commissionAccepted") == null 
                 || jo.get("commissionNotes") == null || jo.get("commissionCost") == null || jo.get("commissionStart") == null 
                 || jo.get("commissionEnd") == null || jo.get("addedDate") == null || jo.get("editedDate") == null) 
@@ -22,7 +22,7 @@ public class ProjectDeserializer implements JsonDeserializer<Project> {
         p.setAuthorId(jo.get("authorId").getAsString());
         p.setStatus(jo.get("status").getAsString());
         p.setPriority(jo.get("priority").getAsInt());
-        p.setPublicReq(jo.get("publicReq").getAsBoolean());
+        p.setPublicReq(jo.get("public").getAsBoolean());
         p.setDeleted(jo.get("deleted").getAsBoolean());
         p.setCommissioned(jo.get("commissioned").getAsBoolean());
         p.setCommissionAccepted(jo.get("commissionAccepted").getAsBoolean());

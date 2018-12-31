@@ -399,7 +399,7 @@ public class Project {
         jo.addProperty("authorId", authorId);
         jo.addProperty("status", status);
         jo.addProperty("priority", priority);
-        jo.addProperty("publicReq", publicReq);
+        jo.addProperty("public", publicReq);
         jo.addProperty("deleted", deleted);
         jo.addProperty("commissioned", commissioned);
         jo.addProperty("commissionAccepted", commissionAccepted);

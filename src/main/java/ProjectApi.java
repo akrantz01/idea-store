@@ -115,8 +115,8 @@ class ProjectApi {
 
         Boolean publicReq, deleted, commissioned, commissionAccepted;
         try {
-            if (json.get("publicReq") == null) publicReq = null;
-            else publicReq = (Boolean) json.get("publicReq");
+            if (json.get("public") == null) publicReq = null;
+            else publicReq = (Boolean) json.get("public");
             if (json.get("deleted") == null) deleted = null;
             else deleted = (Boolean) json.get("deleted");
             if (json.get("commissioned") == null) commissioned = null;

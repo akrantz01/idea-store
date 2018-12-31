@@ -10,7 +10,10 @@ import static spark.Spark.*;
  */
 public class Main {
     static Database db;
-    static Gson gson = new GsonBuilder().registerTypeAdapter(Project.class, new ProjectDeserializer()).create();
+    static Gson gson = new GsonBuilder()
+            .registerTypeAdapter(Project.class, new ProjectDeserializer())
+            .registerTypeAdapter(Project.class, new ProjectSerializer())
+            .create();
 
     /**
      * Main method to run
