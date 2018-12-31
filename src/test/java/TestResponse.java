@@ -1,6 +1,7 @@
 import com.google.gson.Gson;
 import spark.utils.IOUtils;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -27,22 +28,14 @@ class TestResponse {
     }
 
     /**
-     * Convert the body to JSON object
-     * @return json representation of the body
+     * Get standard response from body
+     * @return standard response object
      */
-    Map<String, String> json() {
-        return new Gson().fromJson(body, HashMap.class);
+    StandardResponse standardResponse() {
+        return new Gson().fromJson(body, StandardResponse.class);
     }
 
-    /**
-     * Convert the body to JSON array
-     * @return json representation of the body
-     */
-    List<Map<String, String>> jsonArray() {
-        return new Gson().fromJson(body, List.class);
-    }
-
-    static TestResponse request(String method, String path) {
+    static TestResponse request(String method, String path, String data) {
         HttpURLConnection connection = null;
 
         try {
@@ -50,7 +43,18 @@ class TestResponse {
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(method);
             connection.setDoOutput(true);
+
+            // Post body
+            if (data != null) {
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setRequestProperty("Accept", "application/json");
+
+                DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+                wr.write(data.getBytes());
+            }
+
             connection.connect();
+
             String body = IOUtils.toString(connection.getInputStream());
             return new TestResponse(connection.getResponseCode(), body);
         } catch (IOException e) {

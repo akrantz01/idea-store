@@ -1,3 +1,5 @@
+import com.google.gson.JsonObject;
+
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -382,5 +384,31 @@ public class Project {
             return i.getId() == this.id;
         }
         return false;
+    }
+
+    /**
+     * Convert to Gson JsonObject
+     * @return json object representation of the project
+     */
+    JsonObject toJSON() {
+        JsonObject jo = new JsonObject();
+        jo.addProperty("id", id);
+        jo.addProperty("title", title);
+        jo.addProperty("description", description);
+        jo.addProperty("author", author);
+        jo.addProperty("authorId", authorId);
+        jo.addProperty("status", status);
+        jo.addProperty("priority", priority);
+        jo.addProperty("publicReq", publicReq);
+        jo.addProperty("deleted", deleted);
+        jo.addProperty("commissioned", commissioned);
+        jo.addProperty("commissionAccepted", commissionAccepted);
+        jo.addProperty("commissionNotes", commissionNotes);
+        jo.addProperty("commissionCost", commissionCost);
+        jo.addProperty("commissionStart", commissionStart);
+        jo.addProperty("commissionEnd", commissionEnd);
+        jo.addProperty("addedDate", addedDate);
+        jo.addProperty("editedDate", editedDate);
+        return jo;
     }
 }

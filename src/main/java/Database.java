@@ -52,7 +52,7 @@ public class Database {
     }
 
     /**
-     * Add an project object to the database
+     * Add an project object to the database by single parameters (for testing only)
      * @param title title of the project
      * @param description description of the project
      * @param author who wrote the project
@@ -72,6 +72,31 @@ public class Database {
         try {
             tx = session.beginTransaction();
             project = new Project(title, description, author, authorId, publicReq, commissioned);
+            session.save(project);
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+
+        return project;
+    }
+
+    /**
+     * Add a project to the database
+     * @param project project object
+     * @return the project info from the database
+     */
+    Project addProject(Project project) {
+        if (project == null) return null;
+
+        Session session = factory.openSession();
+        Transaction tx = null;
+
+        try {
+            tx = session.beginTransaction();
             session.save(project);
             tx.commit();
         } catch (HibernateException e) {

@@ -1,3 +1,5 @@
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.eclipse.jetty.http.HttpStatus;
 
 import static spark.Spark.*;
@@ -8,6 +10,7 @@ import static spark.Spark.*;
  */
 public class Main {
     static Database db;
+    static Gson gson = new GsonBuilder().registerTypeAdapter(Project.class, new ProjectDeserializer()).create();
 
     /**
      * Main method to run
@@ -22,7 +25,7 @@ public class Main {
         staticFileLocation("/public");
         exception(IllegalArgumentException.class, (e, request, response) -> {
             response.status(HttpStatus.BAD_REQUEST_400);
-            response.body(new JsonTransformer().render(new ResponseError(HttpStatus.BAD_REQUEST_400, e)));
+            response.body(Main.gson.toJson(new StandardResponse(StatusResponse.ERROR, e.getMessage())));
         });
 
         // Setup routes
@@ -32,15 +35,15 @@ public class Main {
         });
 
         path("/api", () -> {
-            get("/projects", ProjectApi.getProjects, json());
-            post("/projects", ProjectApi.createProject, json());
+            get("/projects", ProjectApi.getProjects);
+            post("/projects", ProjectApi.createProject);
 
             path("/projects", () -> {
-                get("/", ProjectApi.getProjects, json());
-                post("/", ProjectApi.createProject, json());
-                get("/:id", ProjectApi.getProject, json());
-                put("/:id", ProjectApi.updateProject, json());
-                delete("/:id", ProjectApi.deleteProject, json());
+                get("/", ProjectApi.getProjects);
+                post("/", ProjectApi.createProject);
+                get("/:id", ProjectApi.getProject);
+                put("/:id", ProjectApi.updateProject);
+                delete("/:id", ProjectApi.deleteProject);
             });
         });
 
