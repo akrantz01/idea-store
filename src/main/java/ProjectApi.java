@@ -20,7 +20,6 @@ class ProjectApi {
      */
     static Route getProjects = (Request request, Response response) -> {
         response.header("Access-Control-Allow-Origin", "*");
-        response.header("Access-Control-Allow-Methods", "GET");
         response.type("application/json");
 
         JsonElement element = Main.gson.toJsonTree(Main.db.listProjects(), new TypeToken<List<Project>>(){}.getType());
@@ -38,7 +37,6 @@ class ProjectApi {
      */
     static Route getProject = (Request request, Response response) -> {
         response.header("Access-Control-Allow-Origin", "*");
-        response.header("Access-Control-Allow-Methods", "GET");
         response.type("application/json");
 
         Integer id;
@@ -61,7 +59,6 @@ class ProjectApi {
      */
     static Route createProject = (Request request, Response response) -> {
         response.header("Access-Control-Allow-Origin", "*");
-        response.header("Access-Control-Allow-Methods", "POST");
         response.type("application/json");
 
         Project project;
@@ -85,7 +82,6 @@ class ProjectApi {
      */
     static Route updateProject = (Request request, Response response) -> {
         response.header("Access-Control-Allow-Origin", "*");
-        response.header("Access-Control-Allow-Methods", "PUT");
         response.type("application/json");
 
         Integer id;
@@ -184,7 +180,6 @@ class ProjectApi {
      */
     static Route deleteProject = (Request request, Response response) -> {
         response.header("Access-Control-Allow-Origin", "*");
-        response.header("Access-Control-Allow-Methods", "DELETE");
         response.type("application/json");
 
         Integer id;
