@@ -50,7 +50,7 @@ class ProjectApi {
         Project project = Main.db.getProject(id);
         if (project != null) return Main.gson.toJson(new StandardResponse(StatusResponse.SUCCESS, project.toJSON()));
 
-        response.status(HttpStatus.BAD_REQUEST_400);
+        response.status(HttpStatus.NOT_FOUND_404);
         return Main.gson.toJson(new StandardResponse(StatusResponse.ERROR, String.format("project with id '%s' does not exist", id)));
     };
 
@@ -74,7 +74,7 @@ class ProjectApi {
         if (project != null) return Main.gson.toJson(new StandardResponse(StatusResponse.SUCCESS, project.toJSON()));
 
         response.status(HttpStatus.BAD_REQUEST_400);
-        return Main.gson.toJson(new StandardResponse(StatusResponse.ERROR));
+        return Main.gson.toJson(new StandardResponse(StatusResponse.ERROR, "something went wrong, please contact the administrator"));
     };
 
     /**
@@ -99,7 +99,7 @@ class ProjectApi {
             if (json == null) {
                 Project project = Main.db.getProject(id);
                 if (project == null) {
-                    response.status(HttpStatus.BAD_REQUEST_400);
+                    response.status(HttpStatus.NOT_FOUND_404);
                     return Main.gson.toJson(new StandardResponse(StatusResponse.ERROR, String.format("project with id '%s' does not exist", id)));
                 }
                 return Main.gson.toJson(new StandardResponse(StatusResponse.SUCCESS, project.toJSON()));
@@ -171,7 +171,7 @@ class ProjectApi {
                 commissionStart, commissionEnd);
         if (project != null) return Main.gson.toJson(new StandardResponse(StatusResponse.SUCCESS, project.toJSON()));
 
-        response.status(HttpStatus.BAD_REQUEST_400);
+        response.status(HttpStatus.NOT_FOUND_404);
         return Main.gson.toJson(new StandardResponse(StatusResponse.ERROR, String.format("project with id '%s' does not exist", id)));
     };
 
@@ -191,7 +191,7 @@ class ProjectApi {
         }
         if (Main.db.deleteProject(id)) return Main.gson.toJson(new StandardResponse(StatusResponse.SUCCESS));
 
-        response.status(HttpStatus.BAD_REQUEST_400);
+        response.status(HttpStatus.NOT_FOUND_404);
         return Main.gson.toJson(new StandardResponse(StatusResponse.ERROR, String.format("project with id '%s' does not exist", id)));
     };
 }
