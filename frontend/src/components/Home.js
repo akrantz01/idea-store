@@ -266,7 +266,7 @@ class Home extends Component {
 
                 { isAdmin() && this.props.adminView && this.state.currentTab === "new" && (
                     <>
-                        {this.state.displayedProjects.length > 0 && this.filterProjects(this.props.projects, true).map((project, key) =>
+                        {this.filterProjects(this.props.projects, true).length > 0 && this.filterProjects(this.props.projects, true).map((project, key) =>
                             <ProjectItem authenticated={isAuthenticated()} admin={isAdmin} data={project} key={key} onDelete={this.props.delete}
                                          onEdit={this.props.update} onUndo={this.props.undo} location={this.props.location} adminView={this.props.adminView}/>
                         )}
@@ -290,7 +290,7 @@ class Home extends Component {
 
                 { isAdmin() && this.props.adminView && this.state.currentTab === "deleted" && (
                     <>
-                        {this.state.displayedProjects.length > 0 && this.filterProjects(this.props.projects, false, true).map((project, key) =>
+                        {this.filterProjects(this.props.projects, false, true).length > 0 && this.filterProjects(this.props.projects, false, true).map((project, key) =>
                             <ProjectItem authenticated={isAuthenticated()} admin={isAdmin} data={project} key={key} onDelete={this.props.delete}
                                          onEdit={this.props.update} onUndo={this.props.undo}location={this.props.location} adminView={this.props.adminView}/>
                         )}

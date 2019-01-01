@@ -6,6 +6,7 @@ import Requests from './components/Requests';
 import Callback from './components/Callback';
 import Auth from './components/Auth';
 import history from './history';
+import axios from 'axios';
 
 const auth = new Auth();
 
@@ -17,241 +18,95 @@ class Routes extends Component {
         adminLogout: false
     };
 
-    createProject(title, description, author, author_id, p, commission) {
-        // TODO: add API request
-        this.setState({projects: [...this.state.projects, {
-            id: Math.floor((Math.random()*500)+500),
-            title,
-            description,
-            author,
-            author_id,
+    createProject(title, description, author, authorId, p, commissioned) {
+        // TODO: use actual endpoint for creation
+        axios.post("http://localhost:8080/api/projects", {
+            id: -1,
+            title: title,
+            description: description,
+            author: author,
+            authorId: authorId,
             status: "queued",
             priority: -1,
             public: p,
-            commissioned: commission,
-            commission_accepted: false,
-            commission_notes: "",
-            commission_cost: 0,
-            commission_start: "",
-            commission_end: "",
-            added_date: new Date().toDateString(),
-            edited_date: false
-        }]})
+            deleted: false,
+            commissioned: commissioned,
+            commissionAccepted: false,
+            commissionNotes: "",
+            commissionCost: 0.0,
+            commissionStart: "",
+            commissionEnd: "",
+            addedDate: new Date().toDateString(),
+            editedDate: false
+        }).then(result => {
+            if (result.data.hasOwnProperty("data")) this.setState({projects: [...this.state.projects, result.data.data]});
+        }).catch(err => console.error(err));
     }
 
     updateProject(index, updated) {
-        // TODO: add API request
-        this.setState({projects: this.state.projects.map((project) => {
-            if (project.id === index) {
-                for (let key in updated) {
-                    if (project.hasOwnProperty(key)) project[key] = updated[key];
+        if (updated.title === "") updated.title = null;
+        if (updated.description === "") updated.description = null;
+
+        // TODO: use actual endpoint for updating
+        axios.put(`http://localhost:8080/api/projects/${index}`, updated)
+            .then(result => {
+                if (result.data.hasOwnProperty("data")) {
+                    this.setState({projects: this.state.projects.map((project) => {
+                        if (project.id === result.data.data.id) {
+                            for (let key in result.data.data) {
+                                if (project.hasOwnProperty(key)) project[key] = result.data.data[key];
+                            }
+                        }
+                        return project;
+                    })});
                 }
-                project.edited_date = new Date().toLocaleDateString();
-            }
-            return project;
-        })});
+            }).catch(err => console.error(err));
     }
 
     deleteProject(index, permanent=false) {
-        // TODO: add API request
-        this.setState({projects: this.state.projects.filter((p) => {
-            if (p.id === index && !permanent) p.deleted = true;
-            else if (p.id === index && permanent) return false;
-            return true;
-        })});
+        if (permanent) {
+            // TODO: use actual endpoint for creation
+            axios.delete(`http://localhost:8080/api/projects/${index}`)
+                .then(() => {
+                    this.setState({projects: this.state.projects.filter((p) => {
+                        return p.id !== index;
+                    })});
+                }).catch(err => console.error(err));
+        } else {
+            // TODO: use actual endpoint for creation
+            axios.put(`http://localhost:8080/api/projects/${index}`, {deleted: true})
+                .then(result => {
+                    if (result.data.hasOwnProperty("data")) {
+                        this.setState({projects: this.state.projects.map((project) => {
+                            if (project.id === result.data.data.id) project.deleted = true;
+                            return project;
+                        })});
+                    }
+                }).catch(err => console.error(err));
+        }
     }
 
     undoDeleteProject(index) {
-        // TODO: add API request
-        this.setState({projects: this.state.projects.filter((p) => {
-            if (p.id === index) p.deleted = false;
-            return true;
-        })});
+        // TODO: use actual endpoint for creation
+        axios.put(`http://localhost:8080/api/projects/${index}`, {deleted: false})
+            .then(result => {
+                if (result.data.hasOwnProperty("data")) {
+                    this.setState({projects: this.state.projects.map((project) => {
+                        if (project.id === index) project.deleted = false;
+                        return project;
+                    })})
+                }
+            }).catch(err => console.error(err));
     }
 
     refreshProjects() {
         this.setState({refreshing: true});
 
-        // TODO: replace with API call
-        setTimeout(() => {
-            this.setState({
-                refreshing: false,
-                projects: [
-                    {
-                        id: 1,
-                        title: "Completed Project",
-                        description: "This is a test project. It is solely for testing purposes. A user should never see it.",
-                        author: "Test User",
-                        author_id: "an id",
-                        status: "completed",
-                        priority: 3,
-                        public: true,
-                        deleted: false,
-                        commissioned: false,
-                        commission_accepted: false,
-                        commission_notes: "",
-                        commission_cost: 0,
-                        commission_start: "",
-                        commission_end: "",
-                        added_date: new Date().toLocaleDateString(),
-                        edited_date: false
-                    },
-                    {
-                        id: 2,
-                        title: "In Progress Project",
-                        description: "This is a test project. It is solely for testing purposes. A user should never see it.",
-                        author: "Test User",
-                        author_id: "an id",
-                        status: "working",
-                        priority: 2,
-                        public: true,
-                        deleted: false,
-                        commissioned: false,
-                        commission_accepted: false,
-                        commission_notes: "",
-                        commission_cost: 0,
-                        commission_start: "",
-                        commission_end: "",
-                        added_date: new Date().toLocaleDateString(),
-                        edited_date: false
-                    },
-                    {
-                        id: 3,
-                        title: "Queued Project",
-                        description: "This is a test project. It is solely for testing purposes. A user should never see it.",
-                        author: "Test User",
-                        author_id: "an id",
-                        status: "queued",
-                        priority: 1,
-                        public: true,
-                        deleted: false,
-                        commissioned: false,
-                        commission_accepted: false,
-                        commission_notes: "",
-                        commission_cost: 0,
-                        commission_start: "",
-                        commission_end: "",
-                        added_date: new Date().toLocaleDateString(),
-                        edited_date: false
-                    },
-                    {
-                        id: 4,
-                        title: "Ignored Project",
-                        description: "This is a test project. It is solely for testing purposes. A user should never see it.",
-                        author: "Test User",
-                        author_id: "an id",
-                        status: "ignored",
-                        priority: 0,
-                        public: true,
-                        deleted: false,
-                        commissioned: false,
-                        commission_accepted: false,
-                        commission_notes: "",
-                        commission_cost: 0,
-                        commission_start: "",
-                        commission_end: "",
-                        added_date: new Date().toLocaleDateString(),
-                        edited_date: false
-                    },
-                    {
-                        id: 5,
-                        title: "Private Project",
-                        description: "This is a test project. It is solely for testing purposes. A user should never see it.",
-                        author: "Test User",
-                        author_id: "an id",
-                        status: "working",
-                        priority: 2,
-                        public: false,
-                        deleted: false,
-                        commissioned: false,
-                        commission_accepted: false,
-                        commission_notes: "",
-                        commission_cost: 0,
-                        commission_start: "",
-                        commission_end: "",
-                        added_date: new Date().toLocaleDateString(),
-                        edited_date: false
-                    },
-                    {
-                        id: 6,
-                        title: "New Project",
-                        description: "This is a test project. It is solely for testing purposes. A user should never see it.",
-                        author: "Test User",
-                        author_id: "an id",
-                        status: "queued",
-                        priority: -1,
-                        public: true,
-                        deleted: false,
-                        commissioned: false,
-                        commission_accepted: false,
-                        commission_notes: "",
-                        commission_cost: 0,
-                        commission_start: "",
-                        commission_end: "",
-                        added_date: new Date().toLocaleDateString(),
-                        edited_date: false
-                    },
-                    {
-                        id: 7,
-                        title: "Deleted Project",
-                        description: "This is a test project. It is solely for testing purposes. A user should never see it.",
-                        author: "Test User",
-                        author_id: "an id",
-                        status: "working",
-                        priority: 2,
-                        public: true,
-                        deleted: true,
-                        commissioned: false,
-                        commission_accepted: false,
-                        commission_notes: "",
-                        commission_cost: 0,
-                        commission_start: "",
-                        commission_end: "",
-                        added_date: new Date().toLocaleDateString(),
-                        edited_date: false
-                    },
-                    {
-                        id: 8,
-                        title: "Requested Project",
-                        description: "This is a test project. It is solely for testing purposes. A user should never see it.",
-                        author: "Alex Krantz",
-                        author_id: "google-oauth2|102493818408140086770",
-                        status: "working",
-                        priority: 2,
-                        public: true,
-                        deleted: false,
-                        commissioned: false,
-                        commission_accepted: false,
-                        commission_notes: "",
-                        commission_cost: 0,
-                        commission_start: "",
-                        commission_end: "",
-                        added_date: new Date().toLocaleDateString(),
-                        edited_date: false
-                    },
-                    {
-                        id: 9,
-                        title: "Commissioned Project",
-                        description: "This is a test project. It is solely for testing purposes. A user should never see it.",
-                        author: "Alex Krantz",
-                        author_id: "google-oauth2|102493818408140086770",
-                        status: "working",
-                        priority: 2,
-                        public: true,
-                        deleted: false,
-                        commissioned: true,
-                        commission_accepted: false,
-                        commission_notes: "",
-                        commission_cost: 0,
-                        commission_start: "",
-                        commission_end: "",
-                        added_date: new Date().toLocaleDateString(),
-                        edited_date: false,
-                    }
-                ]
-            });
-
-        }, 1000);
+        // TODO: use actual endpoint for creation
+        axios.get("http://localhost:8080/api/projects")
+            .then(result => {
+                if (result.data.hasOwnProperty("data")) this.setState({refreshing: false, projects: result.data.data});
+            }).catch(err => console.error(err));
     }
 
     toggleAdminView = () => this.setState({adminView: !this.state.adminView});
