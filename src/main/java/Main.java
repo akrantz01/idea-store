@@ -37,19 +37,14 @@ public class Main {
             return null;
         });
 
-        options("/", ((request, response) -> {
-            response.header("Allow", "GET,OPTIONS");
-            response.header("Access-Control-Allow-Methods", "GET,OPTIONS");
-            response.status(HttpStatus.OK_200);
-            return "";
-        }));
-
         path("/api", () -> {
             get("/projects", ProjectApi.getProjects);
             post("/projects", ProjectApi.createProject);
             options("/projects", ((request, response) -> {
-                response.header("Allow", "GET,POST,OPTIONS");
-                response.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+                response.header("Allow", "GET, POST, OPTIONS");
+                response.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+                response.header("Access-Control-Allow-Origin", "*");
+                response.header("Access-Control-Allow-Headers", "Content-Type");
                 response.status(HttpStatus.OK_200);
                 return "";
             }));
@@ -59,8 +54,10 @@ public class Main {
                 put("/:id", ProjectApi.updateProject);
                 delete("/:id", ProjectApi.deleteProject);
                 options("/:id", ((request, response) -> {
-                    response.header("Allow", "GET,PUT,DELETE,OPTIONS");
-                    response.header("Access-Control-Allow-Methods", "GET,PUT,DELETE,OPTIONS");
+                    response.header("Allow", "GET, PUT, DELETE, OPTIONS");
+                    response.header("Access-Control-Allow-Methods", "GET, PUT, DELETE, OPTIONS");
+                    response.header("Access-Control-Allow-Origin", "*");
+                    response.header("Access-Control-Allow-Headers", "Content-Type");
                     response.status(HttpStatus.OK_200);
                     return "";
                 }));
@@ -74,8 +71,9 @@ public class Main {
         });
 
         options("*", ((request, response) -> {
-            response.header("Allow", "GET,OPTIONS");
-            response.header("Access-Control-Allow-Methods", "GET,OPTIONS");
+            response.header("Allow", "GET, OPTIONS");
+            response.header("Access-Control-Allow-Methods", "GET, OPTIONS");
+            response.header("Access-Control-Allow-Origin", "*");
             response.status(HttpStatus.OK_200);
             return "";
         }));
