@@ -7,7 +7,7 @@
     "@blueprintjs/datetime": "^3.5.0",
     "@blueprintjs/select": "^3.4.0",
     "auth0-lock": "^11.12.1",
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "history": "^4.7.2",
     "jwt-decode": "^2.2.0",
     "prop-types": "^15.6.2",
